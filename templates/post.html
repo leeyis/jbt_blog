@@ -1,0 +1,27 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="posts">
+        <section class="post">
+            <header class="post-header">
+                <h2 class="post-title">{{ post.title }}</h2>
+
+                    <p class="post-meta">
+                        发布时间: {{ post.pub_time|date:'Y/m/d H:m:s'}}&nbsp&nbsp
+                        分类: <a class="post-category post-category-pure" href="#">{{ post.category }}</a>&nbsp&nbsp
+                        标签:
+                          {% for tag in tags %}
+                            <a class="post-category post-category-pure" href="#">{{ tag }}</a>
+                          {% endfor %}&nbsp;&nbsp;
+                        浏览次数：{{ post.views }}
+                    </p>
+            </header>
+
+                <div class="post-description">
+                    <p>
+                        {{ post.content }}
+                    </p>
+                </div>
+        </section>
+</div><!-- /.blog-post -->
+{% endblock %}   
