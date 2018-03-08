@@ -18,7 +18,9 @@
 
                 <div class="post-description">
                     <p>
-                        {{ post.content|truncatewords_html:100 }}
+                        {#striptags用于过滤正文中所有的HTML标签#}
+                        {#truncatechars用于截取正文前300个字符#}
+                        {{ post.content|striptags|truncatechars:300 }}
                     </p>
                 </div>
                 <div><a class="post-category post-category-design" href="{% url 'detail' id=post.id %}">阅读全文</a></div>
