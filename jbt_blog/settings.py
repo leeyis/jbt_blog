@@ -37,7 +37,8 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'apps.blog'
+    'apps.blog',
+    'django_summernote'
 ]
 
 MIDDLEWARE = [
@@ -123,6 +124,9 @@ STATIC_URL = '/static/'
 STATICFILES_DIRS = [
         os.path.join(BASE_DIR, 'static'),
     ]
+
+MEDIA_URL = '/media/'
+MEDIA_ROOT = os.path.join(BASE_DIR, 'media/')
 
 # 分页配置
 PAGE_NUM = 3
