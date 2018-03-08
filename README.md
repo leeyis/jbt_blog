@@ -2,7 +2,7 @@
 
 一个基于`python3.6`和`Django2.0`的博客。   
 
-![动图](http://7xljc2.com1.z0.glb.clouddn.com/20180306221901.gif)
+![动图](http://7xljc2.com1.z0.glb.clouddn.com/20180308221901.gif)
 ## 已完成功能：
 - 后台文章管理，包括新增、删除和编辑
 - 后台分类管理，包括新增、删除和编辑
