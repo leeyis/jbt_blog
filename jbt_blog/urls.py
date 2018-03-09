@@ -26,6 +26,8 @@ urlpatterns = [
     path('home/', views.home, name='home'),
     path('articles/<int:id>/', views.detail, name='detail'),
     path('summernote/', include('django_summernote.urls')),
+    path('jet/', include('jet.urls', 'jet')),  # Django JET URLS
+    path('jet/dashboard/', include('jet.dashboard.urls', 'jet-dashboard')),  # Django JET dashboard URLS
 ]
 
 if settings.DEBUG:
