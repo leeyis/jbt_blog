@@ -11,7 +11,6 @@ https://docs.djangoproject.com/en/2.0/ref/settings/
 """
 
 import os
-
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
@@ -31,6 +30,8 @@ ALLOWED_HOSTS = []
 # Application definition
 
 INSTALLED_APPS = [
+    'jet.dashboard',
+    'jet',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -38,7 +39,7 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'apps.blog',
-    'django_summernote'
+    'django_summernote',
 ]
 
 MIDDLEWARE = [
@@ -102,7 +103,6 @@ AUTH_PASSWORD_VALIDATORS = [
     },
 ]
 
-
 # Internationalization
 # https://docs.djangoproject.com/en/2.0/topics/i18n/
 
@@ -115,7 +115,6 @@ USE_I18N = True
 USE_L10N = True
 
 USE_TZ = True
-
 
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/2.0/howto/static-files/
@@ -130,3 +129,78 @@ MEDIA_ROOT = os.path.join(BASE_DIR, 'media/')
 
 # 分页配置
 PAGE_NUM = 3
+
+# 富文本编辑器设置
+SUMMERNOTE_CONFIG = {
+    # Using SummernoteWidget - iframe mode
+    'iframe': True,  # or set False to use SummernoteInplaceWidget - no iframe mode
+
+    # Using Summernote Air-mode
+    'airMode': False,
+
+    # Use native HTML tags (`<b>`, `<i>`, ...) instead of style attributes
+    'styleWithSpan': False,
+
+    # Change editor size
+    'width': '80%',
+    'height': '480',
+
+    # Use proper language setting automatically (default)
+    'lang': 'zh-CN',
+}
+
+# 主题
+JET_THEMES = [
+    {
+        'theme': 'default', # theme folder name
+        'color': '#47bac1', # color of the theme's button in user menu
+        'title': 'Default' # theme title
+    },
+    {
+        'theme': 'green',
+        'color': '#44b78b',
+        'title': 'Green'
+    },
+    {
+        'theme': 'light-green',
+        'color': '#2faa60',
+        'title': 'Light Green'
+    },
+    {
+        'theme': 'light-violet',
+        'color': '#a464c4',
+        'title': 'Light Violet'
+    },
+    {
+        'theme': 'light-blue',
+        'color': '#5EADDE',
+        'title': 'Light Blue'
+    },
+    {
+        'theme': 'light-gray',
+        'color': '#222',
+        'title': 'Light Gray'
+    }
+]
+# 是否展开所有菜单
+JET_SIDE_MENU_COMPACT = True  # 菜单不是很多时建议为TRUE
+
+JET_SIDE_MENU_ITEMS = [  # A list of application or custom item dicts
+    {'label': '内容管理', 'app_label': 'blog', 'items': [
+        {'name': 'article'},
+        {'name': 'tag'},
+        {'name': 'category'},
+
+    ]},
+
+    {'label': '附件管理', 'app_label': 'django_summernote', 'items': [
+        {'label': '附件列表', 'name': 'attachment'},
+
+    ]},
+
+    {'label': '权限管理', 'items': [
+        {'name': 'auth.user', 'permissions': ['auth.user']},
+        {'name': 'auth.group', 'permissions': ['auth.user']},
+
+    ]},
+]
