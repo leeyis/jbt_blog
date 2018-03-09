@@ -1,3 +1,4 @@
+
 from django.shortcuts import render
 from apps.blog.models import Article
 from django.core.paginator import Paginator, PageNotAnInteger, EmptyPage
