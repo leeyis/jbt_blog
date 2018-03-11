@@ -128,7 +128,7 @@ MEDIA_URL = '/media/'
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media/')
 
 # 分页配置
-PAGE_NUM = 3
+PAGE_NUM = 2
 
 # 富文本编辑器设置
 SUMMERNOTE_CONFIG = {
@@ -190,7 +190,6 @@ JET_SIDE_MENU_ITEMS = [  # A list of application or custom item dicts
         {'name': 'article'},
         {'name': 'tag'},
         {'name': 'category'},
-
     ]},
 
     {'label': '附件管理', 'app_label': 'django_summernote', 'items': [
