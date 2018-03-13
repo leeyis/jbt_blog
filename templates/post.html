@@ -1,39 +1,43 @@
 {% extends "base.html" %}
 {% block content %}
-<div class="posts">
+    <div class="posts">
         <section class="post">
             <header class="post-header">
                 <h2 class="post-title">{{ post.title }}</h2>
-                    <p class="post-meta">
-                        <i class="fa fa-clock-o" aria-hidden="true"></i>&nbsp; {{ post.pub_time|date:'Y-m-d H:m:s'}}&nbsp;&nbsp;
-                        <i class="fa fa-list-alt"></i>&nbsp;<a class="post-category post-category-pure" href="{% url 'category_menu' id=post.category_id %}" style="text-decoration: none">{{ post.category }}</a>&nbsp;&nbsp;
-                        <i class="fa fa-tags" aria-hidden="true"></i>
-                          {% for tag in tags %}
-                            <a class="post-category post-category-pure" href="{% url 'search_tag' tag=tag %}" style="text-decoration: none">{{ tag }}</a>
-                          {% endfor %}&nbsp;&nbsp;
-                        <i class="fa fa-eye" aria-hidden="true"></i>&nbsp;{{ post.views }}次浏览
-                    </p>
+                <p class="post-meta">
+                    <i class="fa fa-clock-o" aria-hidden="true"></i>&nbsp; {{ post.pub_time|date:'Y-m-d H:m:s' }}&nbsp;&nbsp;
+                    <i class="fa fa-list-alt"></i>&nbsp;<a class="post-category post-category-pure"
+                                                           href="{% url 'category_menu' id=post.category_id %}"
+                                                           style="text-decoration: none">{{ post.category }}</a>&nbsp;&nbsp;
+                    <i class="fa fa-tags" aria-hidden="true"></i>
+                    {% for tag in tags %}
+                        <a class="post-category post-category-pure" href="{% url 'search_tag' tag=tag %}"
+                           style="text-decoration: none">{{ tag }}</a>
+                    {% endfor %}&nbsp;&nbsp;
+                    <i class="fa fa-eye" aria-hidden="true"></i>&nbsp;{{ post.views }}次浏览
+                </p>
             </header>
 
-                <div class="post-description">
-                    <p>
-                        {{ post.content |safe}}
-                    </p>
-                </div>
+            <div class="post-description">
+                <p>
+                    {{ post.content |safe }}
+                </p>
+            </div>
         </section>
-</div><!-- /.blog-post -->
-        <div>
-            {% if prev_post %}
-                <a class="footer" href="{% url 'detail' id=prev_post.id %}" style="text-decoration: none; float: left;">
-                    <i class="fa fa-angle-left"></i>&nbsp;&nbsp;上一篇：{{ prev_post.title }}
-                </a>
-            {% endif %}
-            {% if next_post %}
-                <a class="footer" href="{% url 'detail' id=next_post.id %}" style="text-decoration: none; float: right;">
-                    下一篇：{{ next_post.title }}&nbsp;&nbsp;
-                    <i class="fa fa-angle-right"></i>
-                </a>
-            {% endif %}
-        </div>
+    </div><!-- /.blog-post -->
+    <!-- 上下篇文章切换 -->
+    <div>
+        {% if prev_post %}
+            <a class="footer" href="{% url 'detail' id=prev_post.id %}" style="text-decoration: none; float: left;">
+                <i class="fa fa-angle-left"></i>&nbsp;&nbsp;上一篇：{{ prev_post.title }}
+            </a>
+        {% endif %}
+        {% if next_post %}
+            <a class="footer" href="{% url 'detail' id=next_post.id %}" style="text-decoration: none; float: right;">
+                下一篇：{{ next_post.title }}&nbsp;&nbsp;
+                <i class="fa fa-angle-right"></i>
+            </a>
+        {% endif %}
+    </div>
 
 {% endblock %}
