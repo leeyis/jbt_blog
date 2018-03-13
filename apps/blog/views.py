@@ -10,7 +10,7 @@ tags = Tag.objects.all()  # 获取全部的标签对象
 
 # Create your views here.
 def home(request):  # 主页
-    posts = Article.objects.all()  # 获取全部的Article对象
+    posts = Article.objects.filter(status='p', pub_time__isnull=False)  # 获取全部(状态为已发布，发布时间不为空)Article对象
     paginator = Paginator(posts, settings.PAGE_NUM)  # 每页显示数量
     page = request.GET.get('page')  # 获取URL中page参数的值
     try:
@@ -27,9 +27,20 @@ def detail(request, id):
         post = Article.objects.get(id=str(id))
         post.viewed()  # 更新浏览次数
         tags = post.tags.all()
+        next_post = post.next_article()  # 上一篇文章对象
+        prev_post = post.prev_article()  # 下一篇文章对象
     except Article.DoesNotExist:
         raise Http404
-    return render(request, 'post.html', {'post': post, 'tags': tags, 'category_list': categories})
+    return render(
+        request, 'post.html',
+        {
+            'post': post,
+            'tags': tags,
+            'category_list': categories,
+            'next_post': next_post,
+            'prev_post': prev_post
+        }
+    )
 
 
 def search_category(request, id):
