@@ -22,4 +22,18 @@
                 </div>
         </section>
 </div><!-- /.blog-post -->
-{% endblock %}   
+        <div>
+            {% if prev_post %}
+                <a class="footer" href="{% url 'detail' id=prev_post.id %}" style="text-decoration: none; float: left;">
+                    <i class="fa fa-angle-left"></i>&nbsp;&nbsp;上一篇：{{ prev_post.title }}
+                </a>
+            {% endif %}
+            {% if next_post %}
+                <a class="footer" href="{% url 'detail' id=next_post.id %}" style="text-decoration: none; float: right;">
+                    下一篇：{{ next_post.title }}&nbsp;&nbsp;
+                    <i class="fa fa-angle-right"></i>
+                </a>
+            {% endif %}
+        </div>
+
+{% endblock %}
