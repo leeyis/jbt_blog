@@ -60,12 +60,12 @@ class Article(models.Model):
         self.save(update_fields=['views'])
 
     # 下一篇
-    def next_article(self):
-        return Article.objects.filter(id__gt=self.id, status='p').order_by('id').first()
+    def next_article(self):  # id比当前id大，状态为已发布，发布时间不为空
+        return Article.objects.filter(id__gt=self.id, status='p').first()
 
     # 前一篇
-    def prev_article(self):
-        return Article.objects.filter(id__lt=self.id, status='p').first()
+    def prev_article(self):  # id比当前id小，状态为已发布，发布时间不为空
+        return Article.objects.filter(id__lt=self.id, status='p', pub_time__isnull=False).first()
 
     class Meta:
         ordering = ['-pub_time']  # 按文章创建日期降序
