@@ -20,7 +20,8 @@
                 <ul class="nav-list">
                     <li class="nav-item">
                         {% for category in category_list %}
-                            <a class="pure-button" href="{% url 'category_menu' id=category.id %}" style="text-decoration: none">{{ category }}</a>
+                            <a class="pure-button" href="{% url 'category_menu' id=category.id %}"
+                               style="text-decoration: none">{{ category }}</a>
                         {% endfor %}&nbsp;
                     </li>
                 </ul>
@@ -53,5 +54,23 @@
         </div>
     </div>
 </div>
+<div class="go-top">
+    <div class="arrow"></div>
+    <div class="stick"></div>
+</div>
+<script type="text/javascript" src="{% static 'js/jquery-3.3.1.min.js' %}"></script>
+<script>
+    $(function () {
+        $(window).scroll(function () {
+            if ($(window).scrollTop() > 1000)
+                $('div.go-top').show();
+            else
+                $('div.go-top').hide();
+        });
+        $('div.go-top').click(function () {
+            $('html, body').animate({scrollTop: 0}, 500);
+        });
+    });
+</script>
 </body>
 </html>
