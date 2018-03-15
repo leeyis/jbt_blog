@@ -1,0 +1,52 @@
+{% extends "base.html" %}
+{% load static %}
+{% block content %}
+    <h1 class="content-subhead">归档:&nbsp;{{ year_month }}</h1>
+    <div class="blog-post">
+        {% for post in post_list %}
+            <div class="post-container">
+                <section class="post">
+                    <header class="post-header">
+                        <img width="48" height="48" alt="Tilo Mitra's avatar" class="post-avatar"
+                             src='{% static "image/avatar.png" %}'>
+                        <h2 class="post-title"><a href="{% url 'detail' id=post.id %}"
+                                                  style="text-decoration: none">{{ post.title }}</a></h2>
+                        <p class="post-meta">
+                            <i class="fa fa-calendar" aria-hidden="true"></i>&nbsp;{{ post.pub_time |date:'Y-m-d' }}&nbsp;&nbsp;
+                            <i class="fa fa-eye" aria-hidden="true"></i>&nbsp;{{ post.views }}次浏览&nbsp;&nbsp;
+                            <i class="fa fa-list-alt"></i>&nbsp;{{ post.category }}&nbsp;&nbsp;
+                        </p>
+                    </header>
+
+                    <div class="post-description">
+                        <p>
+                            {#striptags用于过滤正文中所有的HTML标签#}
+                            {#truncatechars用于截取正文前300个字符#}
+                            {{ post.content|striptags|truncatechars:300 }}
+                        </p>
+                    </div>
+                    <div>
+                        <a class="post-category post-category-design" href="{% url 'detail' id=post.id %}"
+                           style="text-decoration: none">阅读全文</a>
+                    </div>
+                </section>
+            </div>
+        {% endfor %}
+    </div><!-- /.blog-post -->
+    {% if post_list.object_list and post_list.paginator.num_pages > 1 %}
+        <div>
+            {% if post_list.has_previous %}
+                <a class="footer" href="?page={{ post_list.previous_page_number }}"
+                   style="text-decoration: none; float: left; padding-left: 1%">
+                    <i class="fa fa-angle-left"></i>&nbsp;&nbsp;上一页
+                </a>
+            {% endif %}
+            {% if post_list.has_next %}
+                <a class="footer" href="?page={{ post_list.next_page_number }}"
+                   style="text-decoration: none; float: right; padding-right: 1%">
+                    下一页&nbsp;&nbsp;<i class="fa fa-angle-right"></i>
+                </a>
+            {% endif %}
+        </div>
+    {% endif %}
+{% endblock %}
