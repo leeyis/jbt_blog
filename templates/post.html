@@ -3,15 +3,14 @@
     <div class="posts">
         <section class="post">
             <header class="post-header">
-                <h2 class="post-title">{{ post.title }}</h2>
+                <h2 class="post-title"><a href="{% url 'detail' id=post.id %}" style="text-decoration: none">{{ post.title }}</a></h2>
                 <p class="post-meta">
                     <i class="fa fa-clock-o" aria-hidden="true"></i>&nbsp; {{ post.pub_time|date:'Y-m-d H:m:s' }}&nbsp;&nbsp;
-                    <i class="fa fa-list-alt"></i>&nbsp;<a class="post-category post-category-pure"
-                                                           href="{% url 'category_menu' id=post.category_id %}"
+                    <i class="fa fa-list-alt"></i>&nbsp;<a href="{% url 'category_menu' id=post.category_id %}"
                                                            style="text-decoration: none">{{ post.category }}</a>&nbsp;&nbsp;
                     <i class="fa fa-tags" aria-hidden="true"></i>
                     {% for tag in tags %}
-                        <a class="post-category post-category-pure" href="{% url 'search_tag' tag=tag %}"
+                        <a href="{% url 'search_tag' tag=tag %}"
                            style="text-decoration: none">{{ tag }}</a>
                     {% endfor %}&nbsp;&nbsp;
                     <i class="fa fa-eye" aria-hidden="true"></i>&nbsp;{{ post.views }}次浏览
