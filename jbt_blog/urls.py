@@ -27,6 +27,7 @@ urlpatterns = [
     path('articles/<int:id>/', views.detail, name='detail'),
     path('category/<int:id>/', views.search_category, name='category_menu'),
     path('tag/<str:tag>/', views.search_tag, name='search_tag'),
+    path('archives/<str:year>/<str:month>', views.archives, name='archives'),
     path('summernote/', include('django_summernote.urls')),
     path('jet/', include('jet.urls', 'jet')),  # Django JET URLS
     path('jet/dashboard/', include('jet.dashboard.urls', 'jet-dashboard')),  # Django JET dashboard URLS
