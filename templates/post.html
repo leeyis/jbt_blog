@@ -5,7 +5,7 @@
             <header class="post-header">
                 <h2 class="post-title"><a href="{% url 'detail' id=post.id %}" style="text-decoration: none">{{ post.title }}</a></h2>
                 <p class="post-meta">
-                    <i class="fa fa-clock-o" aria-hidden="true"></i>&nbsp; {{ post.pub_time|date:'Y-m-d H:m:s' }}&nbsp;&nbsp;
+                    <i class="fa fa-calendar" aria-hidden="true"></i>&nbsp; {{ post.pub_time|date:'Y-m-d H:i' }}&nbsp;&nbsp;
                     <i class="fa fa-list-alt"></i>&nbsp;<a href="{% url 'category_menu' id=post.category_id %}"
                                                            style="text-decoration: none">{{ post.category }}</a>&nbsp;&nbsp;
                     <i class="fa fa-tags" aria-hidden="true"></i>
