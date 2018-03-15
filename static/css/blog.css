@@ -4,9 +4,16 @@
     box-sizing: border-box;
 }
 
+body {
+    height: 100%;
+    background: #ecf2f6;
+    color: #6f7e95;
+    font-family: Arial,sans-serif;
+}
+
 a {
     text-decoration: none;
-    color: rgb(61, 146, 201);
+    color: #47BAC1;
 }
 a:hover,
 a:focus {
@@ -34,7 +41,7 @@ h3 {
 }
 
 .sidebar {
-    background: rgb(61, 79, 93);
+    background: rgb(53, 64, 82);
     color: #fff;
 }
 
@@ -77,25 +84,41 @@ h3 {
 
 .content-subhead {
     text-transform: uppercase;
-    color: #aaa;
+    color: #707070;
     border-bottom: 1px solid #eee;
-    padding: 0.4em 0;
-    font-size: 80%;
+    padding: 0.1em 0 1.5em 0;
+    font-size: 90%;
     font-weight: 500;
     letter-spacing: 0.1em;
+    margin-top: 0.1em;
+    margin-bottom: 0.2em;
 }
 
 .content {
-    padding: 2em 1em 0;
+    padding: 1em 0;
 }
 
 .post {
-    padding-bottom: 2em;
+    padding: 0.2em 2em 2em 2em;
+    background: #FFFFFF;
 }
+/*文章列表样式*/
+.post-container {
+    background: #FFFFFF;
+    padding: 0.3em;
+    margin-bottom: 0.5em;
+    }
 .post-title {
     font-size: 2em;
-    color: #222;
-    margin-bottom: 0.2em;
+    color: #47BAC1;
+    margin-bottom: 0.5em;
+}
+.button {
+    margin: 0 0.1em;
+    padding: 0.3em 1em;
+    color: #fff;
+    background: #5aba59;
+    font-size: 80%;
 }
 .post-avatar {
     border-radius: 50px;
@@ -103,7 +126,7 @@ h3 {
     margin-left: 1em;
 }
 .post-description {
-    font-family: Georgia, "Cambria", serif;
+    font-family: Arial,sans-serif,Georgia, "Cambria";
     color: #444;
     line-height: 1.8em;
 }
@@ -183,13 +206,13 @@ div.go-top {
     opacity: 0.6;
     z-index: 999999;
     position: fixed;
-    bottom: 60px;
-    left: 95.5%;
+    bottom: 8%;
+    right: 0.3%;
     margin-left: 40px;
-    border: 1px solid #4D85D1;
+    border: 1px solid #47BAC1;
     width: 38px;
     height: 38px;
-    background-color: #4D85D1;
+    background-color: #47BAC1;
     border-radius: 3px;
     cursor: pointer;
 }
