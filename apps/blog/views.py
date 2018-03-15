@@ -7,8 +7,6 @@ from django.conf import settings
 categories = Category.objects.all()  # 获取全部的分类对象
 tags = Tag.objects.all()  # 获取全部的标签对象
 months = Article.objects.datetimes('pub_time', 'month', order='DESC')
-for a in months:
-    print('类型：', a)
 
 
 # Create your views here.
@@ -28,7 +26,6 @@ def home(request):  # 主页
 def detail(request, id):
     try:
         post = Article.objects.get(id=str(id))
-        print('发布时间：', post.pub_time)
         post.viewed()  # 更新浏览次数
         tags = post.tags.all()
         next_post = post.next_article()  # 上一篇文章对象
