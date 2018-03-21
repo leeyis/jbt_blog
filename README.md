@@ -72,3 +72,17 @@ A simple blog based on `python3.6` and `Django2.0`.
 - switch between previous and next articles
 - One-click back to the top
 - Monthly archive
+
+## TO-DO
+
+#### CN
+
+- 关键字搜索
+- 评论
+- 标签云
+
+#### EN
+
+- Keyword search
+- Comments
+- Tag Cloud
