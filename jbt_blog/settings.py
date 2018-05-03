@@ -128,7 +128,7 @@ MEDIA_URL = '/media/'
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media/')
 
 # 分页配置
-PAGE_NUM = 3
+PAGE_NUM = 5
 
 # 富文本编辑器设置
 SUMMERNOTE_CONFIG = {
