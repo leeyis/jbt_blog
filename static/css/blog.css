@@ -239,7 +239,7 @@ div.go-top div.stick {
 
 
 /*导航条*/
-#nav_bar{
+.nav_bar{
     box-shadow: 0 1px 1px rgba(0,0,0, 0.10);
     position:fixed;
     top:0;
@@ -264,7 +264,7 @@ div.go-top div.stick {
 
 .card-header {
     padding: .75rem 1.25rem;
-    margin-bottom: 0;
+    /*margin-bottom: 0;*/
     border-bottom: 1px solid rgba(0,0,0,.125);
     color: #565d64;
     font-size: 24px;
