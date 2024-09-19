@@ -12,38 +12,40 @@ A simple blog based on `python3.6` and `Django2.0`.
   
 ## Front page
 
-![1](http://7xljc2.com1.z0.glb.clouddn.com/20180315_1.png)
-
-
-![2](http://7xljc2.com1.z0.glb.clouddn.com/20180315_2.png)
+![1](screenshot/f1.png)
 
 ---
+![2](screenshot/f2.png)
 
-![3](http://7xljc2.com1.z0.glb.clouddn.com/20180315_3.png)
-
----
-
-![4](http://7xljc2.com1.z0.glb.clouddn.com/20180315_4.png)
 
 ---
 
 ## Backend page
-![1](http://7xljc2.com1.z0.glb.clouddn.com/20180315_5.png)
+![1](screenshot/b1.png)
 
 ---
 
-![2](http://7xljc2.com1.z0.glb.clouddn.com/20180315_6.png)
+![2](screenshot/b2.png)
 
 ---
-![3](http://7xljc2.com1.z0.glb.clouddn.com/20180309-4.png)
+![3](screenshot/b3.png)
 
----
-
-![4](http://7xljc2.com1.z0.glb.clouddn.com/20180315_7.png)
-
----
-
-## Completed
+## Quick start
+```bash
+#创建虚拟环境
+conda create -n blog python=3.6 -y
+#激活虚拟环境
+conda activate blog
+#安装依赖包
+pip install -r requirements.txt
+#启动服务器
+python manage.py runserver
+```
+浏览器访问`http://127.0.0.1:8000`即可访问主页。\
+后台页面登录地址为`http://127.0.0.1:8000/admin` \
+默认用户名为`jinbitou`，默认密码为`123456` \
+注：如果忘记密码或者密码错误，可以执行`python manage.py changepassword jinbitou`修改。
+## Features
 
 #### CN
 - 文章管理，包括新增、删除和编辑
