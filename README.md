@@ -1,5 +1,3 @@
-# 金笔头博客 JinBiTou Blog
-
 ## 简介 Introduction
 
 一个基于 **Django 5.2.2** 和 **Python 3.x** 的现代化博客系统，支持 Markdown 编辑和美观的管理界面。
@@ -32,18 +30,14 @@ A modern blog system based on **Django 5.2.2** and **Python 3.x**, featuring Mar
 *文章详情页 - Article Detail Page*
 
 ### 后台管理 Admin Backend
-![管理首页](screenshot/b1.png)
-*管理后台首页 - Admin Dashboard*
+![文章管理](screenshot/b1.png)
+*后台文章管理 - Article Management*
 
 ---
 
-![文章管理](screenshot/b2.png)
-*文章管理页面 - Article Management*
+![文章编辑](screenshot/b2.png)
+*文章编辑页面 - Article Edit*
 
----
-
-![编辑文章](screenshot/b3.png)
-*Markdown编辑器 - Markdown Editor*
 
 ## 快速开始 Quick Start
 
