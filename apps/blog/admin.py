@@ -1,5 +1,6 @@
 from django.contrib import admin
 from .models import Article, Category, Tag
+from django.conf import settings
 
 admin.site.register(Category)
 admin.site.register(Tag)
@@ -21,3 +22,8 @@ class ArticleAdmin(admin.ModelAdmin):
         'tags',
         'pub_time',
     )
+
+# 自定义管理界面设置
+admin.site.site_header = getattr(settings, 'ADMIN_SITE_HEADER', '金笔头博客管理后台')
+admin.site.site_title = getattr(settings, 'ADMIN_SITE_TITLE', '金笔头博客')
+admin.site.index_title = getattr(settings, 'ADMIN_INDEX_TITLE', '欢迎访问后台管理')

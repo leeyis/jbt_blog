@@ -159,5 +159,17 @@ MEDIA_ROOT = os.path.join(BASE_DIR, 'media/')
 # 分页配置
 PAGE_NUM = 5
 
-# ADMIN_INTERFACE配置（替代JET）
-# 管理界面已通过django-admin-interface美化，无需额外配置
+# DJANGO-ADMIN-INTERFACE 配置
+ADMIN_INTERFACE = {
+    'TITLE': '金笔头博客管理后台',
+    'HEADER': '金笔头博客',
+    'FAVICON': 'admin/img/favicon.ico',
+    'WELCOME_SIGN': '欢迎访问博客管理后台',
+    'COPYRIGHT': 'JBT Blog © 2024',
+    'SUPPORT_3RD_PARTY_APPS': True,
+}
+
+# 管理界面站点设置
+# ADMIN_SITE_HEADER = '金笔头博客管理后台'
+# ADMIN_SITE_TITLE = '金笔头博客'
+# ADMIN_INDEX_TITLE = '欢迎访问金笔头博客管理系统'

@@ -3,7 +3,6 @@ Django>=5.2.2
 
 # Markdown编辑器和相关依赖
 django-mdeditor>=0.1.20
-bleach>=6.2.0
 
 # 管理界面美化
 django-admin-interface>=0.30.0
@@ -13,15 +12,9 @@ django-colorfield>=0.14.0
 markdown>=3.8
 Pygments>=2.19.1
 
-# HTML转Markdown工具（用于数据迁移脚本）
-html2text>=2025.4.15
+# 可选依赖（仅在需要数据迁移时使用）
+# html2text>=2025.4.15
 
-# 图片处理依赖
-Pillow>=11.2.1
-
-# 字符串处理工具（mdeditor依赖）
-python-slugify>=8.0.4
-
-# 核心依赖包（通常自动安装，但明确列出确保兼容性）
+# Django核心依赖（通常自动安装，但明确列出确保兼容性）
 asgiref>=3.8.1
 sqlparse>=0.5.3
