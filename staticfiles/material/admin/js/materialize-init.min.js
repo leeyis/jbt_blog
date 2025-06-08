@@ -1,0 +1,1 @@
+document.addEventListener("DOMContentLoaded",function(){var e=document.querySelectorAll(".datepicker");e.length&&(datepickerOptions.format=get_format("DATE_INPUT_FORMATS")[0].replace("%Y","yyyy").replace("%m","mm").replace("%d","dd"),M.Datepicker.init(e,datepickerOptions));var t=document.querySelectorAll(".timepicker");t.length&&M.Timepicker.init(t,timeOptions)});

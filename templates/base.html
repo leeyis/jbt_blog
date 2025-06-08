@@ -5,6 +5,12 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>{% block title %} jbt Blog {% endblock %}</title>
+    
+    <!-- Google Fonts - 程序员友好字体 -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Source+Code+Pro:wght@300;400;500;600&family=JetBrains+Mono:wght@300;400;500;600&display=swap" rel="stylesheet">
+    
     <link rel="stylesheet" type="text/css" href="{% static 'css/pure-min.css' %}"/>
     <link rel="stylesheet" type="text/css" href="{% static 'css/grids-responsive-min.css' %}"/>
     <link rel="stylesheet" type="text/css" href="{% static 'css/blog.css' %}"/>
@@ -15,10 +21,11 @@
     <!--左侧边栏 开始-->
     <div class="sidebar pure-u-1 pure-u-md-1-4">
         <div class="header">
+            <div class="author-avatar">
+                <img src='{% static "image/avatar.png" %}' alt="作者头像" class="sidebar-avatar">
+            </div>
             <h1 class="brand-title"><a href="{% url 'home' %}" style="text-decoration: none">金笔头博客</a></h1>
-            <br>
             <h2 class="brand-tagline">Stay hungry, Stay foolish!</h2>
-            <br>
             <nav class="nav">
                 <ul class="nav-list">
                     <li class="nav-item">
@@ -28,9 +35,8 @@
                         {% endfor %}&nbsp;
                     </li>
                 </ul>
-                <br>
-                <h3 class="brand-tagline" style="margin: 2%">文章归档</h3>
-                <ul class="nav-list" style="margin: 2%">
+                <h3 class="brand-tagline archive-title">文章归档</h3>
+                <ul class="nav-list archive-list">
                     {% for m in months %}
                         <li>
                             <a href="{% url 'archives' year=m.year month=m.month %}"
@@ -40,7 +46,6 @@
                         暂无归档！
                     {% endfor %}
                 </ul>
-                <br>
                 <ul class="nav-list">
                 <li>
                     <a href="#" style="text-decoration: none">
@@ -62,32 +67,11 @@
         </div>
     </div>
     <!--左侧边栏 结束-->
-    <!--文章列表 开始-->
+    <!--右侧内容 开始-->
     <div class="content pure-u-1 pure-u-md-3-4">
-        <div>
-            {% block content %}
-            {% endblock %}
-        </div>
+        {% block content %}{% endblock %}
     </div>
-    <!--文章列表 结束-->
+    <!--右侧内容 结束-->
 </div>
-<div class="go-top">
-    <div class="arrow"></div>
-    <div class="stick"></div>
-</div>
-<script type="text/javascript" src="{% static 'js/jquery-3.3.1.min.js' %}"></script>
-<script>
-    $(function () {
-        $(window).scroll(function () {
-            if ($(window).scrollTop() > 1000)
-                $('div.go-top').show();
-            else
-                $('div.go-top').hide();
-        });
-        $('div.go-top').click(function () {
-            $('html, body').animate({scrollTop: 0}, 500);
-        });
-    });
-</script>
 </body>
 </html>

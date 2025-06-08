@@ -30,8 +30,8 @@ ALLOWED_HOSTS = []
 # Application definition
 
 INSTALLED_APPS = [
-    'jet.dashboard',
-    'jet',
+    'admin_interface',
+    'colorfield',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -39,9 +39,37 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'apps.blog',
-    'django_summernote',
+    'mdeditor',  # 替换 summernote
 ]
 
+# Markdown编辑器配置
+MDEDITOR_CONFIGS = {
+    'default':{
+        'width': '90%',  # 宽度
+        'height': 500,   # 高度
+        'toolbar': ["undo", "redo", "|",
+                   "bold", "del", "italic", "quote", "ucwords", "uppercase", "lowercase", "|",
+                   "h1", "h2", "h3", "h5", "h6", "|",
+                   "list-ul", "list-ol", "hr", "|",
+                   "link", "reference-link", "image", "code", "preformatted-text", "code-block", "table", "datetime",
+                   "emoji", "html-entities", "pagebreak", "goto-line", "|",
+                   "help", "info",
+                   "||", "preview", "watch", "fullscreen"],
+        'upload_image_formats': ["jpg", "jpeg", "gif", "png", "bmp", "webp"],  # 允许上传的图片格式
+        'image_folder': 'editor',  # 图片保存文件夹
+        'theme': 'default',  # 主题
+        'preview_theme': 'default',  # 预览主题
+        'editor_theme': 'default',  # 编辑器主题
+        'toolbar_autofixed': True,  # 工具栏是否固定
+        'search_replace': True,  # 是否开启查找替换
+        'emoji': True,  # 是否开启表情功能
+        'tex': True,  # 是否开启 tex 图表功能
+        'flow_chart': True,  # 是否开启流程图功能
+        'sequence': True,  # 是否开启序列图功能
+    }
+}
+
+X_FRAME_OPTIONS = 'SAMEORIGIN'  # 新增这一行
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
@@ -120,6 +148,7 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/2.0/howto/static-files/
 
 STATIC_URL = '/static/'
+STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')  # 新增这行
 STATICFILES_DIRS = [
         os.path.join(BASE_DIR, 'static'),
     ]
@@ -130,76 +159,5 @@ MEDIA_ROOT = os.path.join(BASE_DIR, 'media/')
 # 分页配置
 PAGE_NUM = 5
 
-# 富文本编辑器设置
-SUMMERNOTE_CONFIG = {
-    # Using SummernoteWidget - iframe mode
-    'iframe': True,  # or set False to use SummernoteInplaceWidget - no iframe mode
-
-    # Using Summernote Air-mode
-    'airMode': False,
-
-    # Use native HTML tags (`<b>`, `<i>`, ...) instead of style attributes
-    'styleWithSpan': False,
-
-    # Change editor size
-    'width': '80%',
-    'height': '480',
-
-    # Use proper language setting automatically (default)
-    'lang': 'zh-CN',
-}
-
-# 主题
-JET_THEMES = [
-    {
-        'theme': 'default', # theme folder name
-        'color': '#47bac1', # color of the theme's button in user menu
-        'title': 'Default' # theme title
-    },
-    {
-        'theme': 'green',
-        'color': '#44b78b',
-        'title': 'Green'
-    },
-    {
-        'theme': 'light-green',
-        'color': '#2faa60',
-        'title': 'Light Green'
-    },
-    {
-        'theme': 'light-violet',
-        'color': '#a464c4',
-        'title': 'Light Violet'
-    },
-    {
-        'theme': 'light-blue',
-        'color': '#5EADDE',
-        'title': 'Light Blue'
-    },
-    {
-        'theme': 'light-gray',
-        'color': '#222',
-        'title': 'Light Gray'
-    }
-]
-# 是否展开所有菜单
-JET_SIDE_MENU_COMPACT = True  # 菜单不是很多时建议为TRUE
-
-JET_SIDE_MENU_ITEMS = [  # A list of application or custom item dicts
-    {'label': '内容管理', 'app_label': 'blog', 'items': [
-        {'name': 'article'},
-        {'name': 'tag'},
-        {'name': 'category'},
-    ]},
-
-    {'label': '附件管理', 'app_label': 'django_summernote', 'items': [
-        {'label': '附件列表', 'name': 'attachment'},
-
-    ]},
-
-    {'label': '权限管理', 'items': [
-        {'name': 'auth.user', 'permissions': ['auth.user']},
-        {'name': 'auth.group', 'permissions': ['auth.user']},
-
-    ]},
-]
+# ADMIN_INTERFACE配置（替代JET）
+# 管理界面已通过django-admin-interface美化，无需额外配置

@@ -1,5 +1,6 @@
 from django.db import models
 from django.utils.timezone import now
+from mdeditor.fields import MDTextField
 
 
 # Create your models here.
@@ -41,7 +42,7 @@ class Article(models.Model):
         ('p', '发表'),
     )
     title = models.CharField(verbose_name='标题', max_length=100)
-    content = models.TextField(verbose_name='正文', blank=True, null=True)
+    content = MDTextField(verbose_name='正文', blank=True, null=True)  # 替换 TextField
     status = models.CharField(verbose_name='状态', max_length=1, choices=STATUS_CHOICES, default='p')
     views = models.PositiveIntegerField(verbose_name='浏览量', default=0)
     created_time = models.DateTimeField(verbose_name='创建时间', default=now)
