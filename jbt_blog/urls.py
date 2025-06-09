@@ -28,5 +28,6 @@ urlpatterns = [
     path('category/<int:id>/', views.search_category, name='category_menu'),
     path('tag/<str:tag>/', views.search_tag, name='search_tag'),
     path('archives/<str:year>/<str:month>', views.archives, name='archives'),
+    path('api/tagcloud/', views.tag_cloud_json, name='tag_cloud_json'),  # 标签云JSON API
     path('mdeditor/', include('mdeditor.urls')),  # 替换 summernote
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

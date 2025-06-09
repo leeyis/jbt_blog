@@ -46,6 +46,18 @@ h3 {
     position: fixed;
     width: 25%;
     height: 100vh;
+    overflow-y: auto;
+    overflow-x: hidden;
+}
+
+/* 隐藏左侧边栏滚动条 */
+.sidebar::-webkit-scrollbar {
+    width: 0px;
+    background: transparent;
+}
+
+.sidebar::-webkit-scrollbar-thumb {
+    background: transparent;
 }
 
 .brand-title,
@@ -87,7 +99,7 @@ h3 {
     width: 80px;
     height: 80px;
     border-radius: 50%;
-    border: 3px solid rgba(71, 186, 193, 0.8);
+    border: 1px solid #47bac1; /*头像边框粗细*/
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
     transition: transform 0.3s ease, box-shadow 0.3s ease;
 }
@@ -134,8 +146,6 @@ h3 {
 }
 .nav-item {
     display: inline-block;
-    *display: inline;
-    zoom: 1;
 }
 .nav-item a {
     background: rgba(71, 186, 193, 0.1);
@@ -189,7 +199,7 @@ h3 {
 .blog-post {
     width: 100%;
     margin: 0;
-    padding: 1rem 2rem;
+    padding: 0;
 }
 
 /* 分页链接样式 - 与category.html一致 */
@@ -803,7 +813,7 @@ h3 {
     font-size: 80%;
 }
     .post-category-design {
-        background: #5aba59;
+        background: #47bac1;
     }
     .post-category-pure {
         background: #4d85d1;
@@ -978,4 +988,446 @@ div.go-top div.stick {
     padding-left: 1%;
     padding-top: 5%;
     text-align: center;
+}
+
+/* 个人资料区域 */
+.profile-section {
+    text-align: center;
+    padding: 2.5rem 1rem 1.5rem 1rem;
+}
+
+/* 技能标签区域 */
+.skills-section {
+    padding: 1.5rem 1rem;
+    margin-bottom: 2rem;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.skill-tags {
+    display: flex;
+    justify-content: center;
+    gap: 0.5rem;
+    flex-wrap: wrap;
+    max-height: 80px;
+    overflow: hidden;
+}
+
+.skill-tag {
+    padding: 0.4rem 0.8rem;
+    border-radius: 20px;
+    font-size: 0.75rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    transition: all 0.3s ease;
+    cursor: default;
+}
+
+.skill-tag-primary {
+    background: #3498db;
+    color: white;
+    border: 1px solid #3498db;
+}
+
+.skill-tag-info {
+    background: #2ecc71;
+    color: white;
+    border: 1px solid #2ecc71;
+}
+
+.skill-tag-warning {
+    background: #f39c12;
+    color: white;
+    border: 1px solid #f39c12;
+}
+
+.skill-tag:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+}
+
+/* 导航卡片容器 */
+.nav-card {
+    background: #263344;
+    border-radius: 8px;
+    padding: 0.8rem 1.5rem;
+    margin: 0 0.8rem 1.2rem 0.8rem;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+/* 导航区域 */
+.nav-section {
+    margin-bottom: 0;
+}
+
+.section-title {
+    color: rgba(255, 255, 255, 0.9);
+    font-size: 1rem;
+    font-weight: 600;
+    margin-bottom: 0.6rem;
+    padding-bottom: 0.4rem;
+    border-bottom: 1px solid #247d82;
+    text-align: left;
+    display: flex;
+    align-items: center;
+}
+
+.section-title i {
+    margin-right: 0.5rem;
+    color: #47bac1;
+}
+
+/* 分类标签 */
+.category-tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    justify-content: center;
+}
+
+.category-tag {
+    background: rgba(71, 186, 193, 0.15);
+    border: 1px solid rgba(71, 186, 193, 0.5);
+    color: #fff;
+    padding: 0.4rem 0.8rem;
+    border-radius: 15px;
+    font-size: 0.8rem;
+    text-decoration: none;
+    transition: all 0.3s ease;
+    font-weight: 500;
+}
+
+.category-tag:hover {
+    background: #47BAC1;
+    border-color: #47BAC1;
+    transform: translateY(-1px);
+    box-shadow: 0 2px 8px rgba(71, 186, 193, 0.3);
+    text-decoration: none;
+    color: #fff;
+}
+
+/* 标签云 - 胶囊样式 */
+.tag-cloud {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.6rem;
+    justify-content: flex-start;
+    align-items: center;
+    max-height: 150px;
+    overflow: hidden;
+    position: relative;
+}
+
+.tag-item {
+    display: inline-block;
+    background: #394d63;
+    color: rgba(255, 255, 255, 0.9);
+    text-decoration: none;
+    transition: all 0.3s ease;
+    font-weight: 500;
+    font-size: 0.8rem;
+    padding: 0.5rem 1rem;
+    border-radius: 20px;
+}
+
+.tag-item:hover {
+    background: #47BAC1;
+    color: #fff;
+    transform: translateY(-1px);
+    box-shadow: 0 2px 8px rgba(71, 186, 193, 0.3);
+    text-decoration: none;
+}
+
+
+
+/* 归档列表 */
+.archive-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    max-height: 200px;
+    overflow-y: auto;
+    overflow-x: hidden;
+}
+
+/* 自定义滚动条样式 */
+.archive-list::-webkit-scrollbar {
+    width: 4px;
+}
+
+.archive-list::-webkit-scrollbar-track {
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 2px;
+}
+
+.archive-list::-webkit-scrollbar-thumb {
+    background: rgba(255, 255, 255, 0.3);
+    border-radius: 2px;
+}
+
+.archive-list::-webkit-scrollbar-thumb:hover {
+    background: rgba(255, 255, 255, 0.5);
+}
+
+.archive-item {
+    margin-bottom: 0.8rem;
+}
+
+.archive-item a {
+    color: rgba(255, 255, 255, 0.8);
+    text-decoration: none;
+    font-size: 0.9rem;
+    display: block;
+    padding: 0.5rem;
+    border-radius: 6px;
+    transition: all 0.3s ease;
+    border-left: 3px solid transparent;
+    text-align: left;
+}
+
+.archive-item a:hover {
+    color: #47BAC1;
+    background: rgba(71, 186, 193, 0.1);
+    border-left-color: #47BAC1;
+    text-decoration: none;
+    transform: translateX(5px);
+}
+
+.archive-date {
+    display: inline;
+}
+
+.archive-count {
+    color: rgba(255, 255, 255, 0.7);
+    font-size: 0.8rem;
+    font-weight: 500;
+    margin-left: 0.5rem;
+    display: inline;
+}
+
+/* 社交媒体区域 */
+.social-links {
+    display: flex;
+    justify-content: center;
+    gap: 1rem;
+    margin-top: 1.5rem;
+}
+
+.social-link {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 40px;
+    height: 40px;
+    background: rgba(255, 255, 255, 0.1);
+    color: rgba(255, 255, 255, 0.8);
+    border-radius: 50%;
+    text-decoration: none;
+    transition: all 0.3s ease;
+    border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+.social-link:hover {
+    background: #47BAC1;
+    color: #fff;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(71, 186, 193, 0.4);
+    text-decoration: none;
+    border-color: #47BAC1;
+}
+
+.social-link i {
+    font-size: 1.2rem;
+}
+
+/* 响应式设计 */
+@media (max-width: 768px) {
+    .skills-section {
+        margin-bottom: 1.5rem;
+    }
+    
+    .skill-tags {
+        justify-content: center;
+        gap: 0.3rem;
+    }
+    
+    .skill-tag {
+        font-size: 0.7rem;
+        padding: 0.3rem 0.6rem;
+    }
+    
+    .nav-section {
+        margin-bottom: 1.5rem;
+        padding-bottom: 1rem;
+    }
+    
+    .tag-cloud {
+        gap: 0.4rem;
+    }
+    
+    .tag-item {
+        font-size: 0.75rem;
+        padding: 0.4rem 0.8rem;
+    }
+    
+    .social-links {
+        gap: 0.8rem;
+    }
+    
+    .social-link {
+        width: 35px;
+        height: 35px;
+    }
+    
+    .social-link i {
+        font-size: 1rem;
+    }
+}
+
+/* 分类列表 */
+.category-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    max-height: 150px;
+    overflow-y: auto;
+    overflow-x: hidden;
+}
+
+.category-list::-webkit-scrollbar {
+    width: 4px;
+}
+
+.category-list::-webkit-scrollbar-track {
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 2px;
+}
+
+.category-list::-webkit-scrollbar-thumb {
+    background: rgba(255, 255, 255, 0.3);
+    border-radius: 2px;
+}
+
+.category-list::-webkit-scrollbar-thumb:hover {
+    background: rgba(255, 255, 255, 0.5);
+}
+
+.category-item a {
+    color: rgba(255, 255, 255, 0.8);
+    text-decoration: none;
+    font-size: 0.9rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0.6rem 0.5rem;
+    border-radius: 6px;
+    transition: all 0.3s ease;
+    border-left: 3px solid transparent;
+}
+
+.category-item a:hover {
+    color: #47BAC1;
+    background: rgba(71, 186, 193, 0.1);
+    border-left-color: #47BAC1;
+    text-decoration: none;
+    transform: translateX(5px);
+}
+
+.category-count {
+    color: rgba(255, 255, 255, 0.6);
+    font-size: 0.8rem;
+    background-color: #394d63;
+    padding: 0.1rem 0.4rem;
+    border-radius: 8px;
+    font-weight: 500;
+}
+
+/* D3.js标签云样式 */
+.d3-tag-cloud-container {
+    width: 100%;
+    min-height: 200px;
+    position: relative;
+    background: rgba(255, 255, 255, 0.05);
+    border-radius: 8px;
+    padding: 10px;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.d3-tag-cloud-container svg {
+    width: 100%;
+    height: 100%;
+    overflow: visible;
+}
+
+.d3-tag-cloud-container .tag-item {
+    font-family: 'Inter', 'Microsoft YaHei', sans-serif;
+    font-weight: 500;
+    fill: #ecf0f1;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.d3-tag-cloud-container .tag-item:hover {
+    fill: #3498db !important;
+    font-weight: 600 !important;
+}
+
+/* 标签云工具提示样式 */
+.tag-tooltip {
+    position: absolute;
+    background: rgba(0, 0, 0, 0.9);
+    color: white;
+    padding: 8px 12px;
+    border-radius: 4px;
+    font-size: 12px;
+    font-family: 'Inter', 'Microsoft YaHei', sans-serif;
+    pointer-events: none;
+    z-index: 1000;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+/* 响应式支持 */
+@media (max-width: 768px) {
+    .d3-tag-cloud-container {
+        min-height: 150px;
+        padding: 8px;
+    }
+    
+    .d3-tag-cloud-container .tag-item {
+        font-size: 10px !important;
+    }
+}
+
+/* 结果页头部样式 */
+.page-header {
+    background: #fff;
+    padding: 1rem 2rem;
+    margin-bottom: 1.5rem;
+    border-radius: 8px;
+    border: 1px solid #e9ecef;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+}
+
+.page-header-title {
+    font-size: 1.5rem;
+    color: #2c3e50;
+    margin: 0;
+    display: flex;
+    align-items: center;
+    font-weight: 600;
+}
+
+.page-header-title i {
+    color: #47bac1;
+    margin-right: 0.8rem;
+    font-size: 1.8rem;
+    vertical-align: middle;
+}
+
+.page-header-meta {
+    margin-top: 0.5rem;
+    color: #6c757d;
+    font-size: 0.9rem;
 }

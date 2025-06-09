@@ -48,12 +48,25 @@ class Article(models.Model):
     created_time = models.DateTimeField(verbose_name='创建时间', default=now)
     pub_time = models.DateTimeField(verbose_name='发布时间', blank=True, null=True)
     last_mod_time = models.DateTimeField(verbose_name='修改时间', default=now)
-    category = models.ForeignKey(Category, verbose_name='分类', on_delete=models.CASCADE, blank=False, null=False)
+    category = models.ForeignKey(Category, verbose_name='分类', on_delete=models.SET_NULL, blank=True, null=True)
     tags = models.ManyToManyField(Tag, verbose_name='标签集合', blank=True)
 
     # 使对象在后台显示更友好
     def __str__(self):
         return self.title
+
+    def save(self, *args, **kwargs):
+        """重写save方法，自动处理发布时间"""
+        if self.status == 'p':  # 如果状态为发表
+            if not self.pub_time:  # 且发布时间为空
+                self.pub_time = now()  # 设置当前时间为发布时间
+        else:  # 如果状态为草稿
+            self.pub_time = None  # 清空发布时间
+        
+        # 更新修改时间
+        self.last_mod_time = now()
+        
+        super().save(*args, **kwargs)
 
     # 更新浏览量
     def viewed(self):

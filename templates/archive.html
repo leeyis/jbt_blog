@@ -1,63 +1,23 @@
 {% extends "base.html" %}
 {% load static %}
 {% load markdown_extras %}
-{% block content %}
-    <h1 class="content-subhead">归档:&nbsp;{{ year_month }}</h1>
-    <div class="blog-post">
-        {% for post in post_list %}
-            <div class="post-container">
-                <section class="post">
-                    <header class="post-header">
-                        <div class="post-content-wrapper">
-                            <h2 class="post-title">
-                                <a href="{% url 'detail' id=post.id %}" style="text-decoration: none">
-                                    {{ post.title }}
-                                </a>
-                            </h2>
-                            <div class="post-meta">
-                                <span class="meta-item">
-                                    <i class="fa fa-calendar" aria-hidden="true"></i>
-                                    {{ post.pub_time|date:'Y年m月d日' }}
-                                </span>
-                                <span class="meta-item">
-                                    <i class="fa fa-list-alt" aria-hidden="true"></i>
-                                    {{ post.category }}
-                                </span>
-                                <span class="meta-item">
-                                    <i class="fa fa-eye" aria-hidden="true"></i>
-                                    {{ post.views }}次浏览
-                                </span>
-                            </div>
-                        </div>
-                    </header>
+{% block title %} {{ year }}年{{ month }}月 - 文章归档 {% endblock %}
 
-                    <div class="post-summary">
-                        <p>
-                            {{ post.content|markdown_truncate:300 }}
-                        </p>
-                    </div>
-                    <div>
-                        <a class="post-category post-category-design" href="{% url 'detail' id=post.id %}"
-                           style="text-decoration: none">阅读全文</a>
-                    </div>
-                </section>
-            </div>
-        {% endfor %}
-    </div><!-- /.blog-post -->
-    {% if post_list.object_list and post_list.paginator.num_pages > 1 %}
-        <div>
-            {% if post_list.has_previous %}
-                <a class="footer" href="?page={{ post_list.previous_page_number }}"
-                   style="text-decoration: none; float: left; padding-left: 1%">
-                    <i class="fa fa-angle-left"></i>&nbsp;&nbsp;上一页
-                </a>
-            {% endif %}
-            {% if post_list.has_next %}
-                <a class="footer" href="?page={{ post_list.next_page_number }}"
-                   style="text-decoration: none; float: right; padding-right: 1%">
-                    下一页&nbsp;&nbsp;<i class="fa fa-angle-right"></i>
-                </a>
-            {% endif %}
+{% block content %}
+    <div class="blog-post" id="post-list-container">
+        <div class="page-header">
+            <h1 class="page-header-title">
+                <i class="fa fa-archive"></i> 归档：{{ year }}年{{ month }}月
+            </h1>
+            <p class="page-header-meta">共发布 {{ post_list.paginator.count }} 篇文章</p>
+        </div>
+        
+        {% include 'post_list_partial.html' %}
+    </div>
+
+    {% if post_list.has_next %}
+        <div id="infinite-scroll-trigger" data-next-page="{{ post_list.next_page_number }}">
+            <p style="text-align: center; color: #999;">正在加载更多文章...</p>
         </div>
     {% endif %}
 {% endblock %}

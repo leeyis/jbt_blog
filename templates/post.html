@@ -13,12 +13,14 @@
                                 <i class="fa fa-calendar" aria-hidden="true"></i>
                                 {{ post.pub_time|date:'Y年m月d日 H:i' }}
                             </span>
+                            {% if post.category %}
                             <span class="meta-item">
                                 <i class="fa fa-list-alt" aria-hidden="true"></i>
                                 <a href="{% url 'category_menu' id=post.category_id %}" class="category-link">
                                     {{ post.category }}
                                 </a>
                             </span>
+                            {% endif %}
                             {% if tags %}
                                 <span class="meta-item">
                                     <i class="fa fa-tags" aria-hidden="true"></i>
