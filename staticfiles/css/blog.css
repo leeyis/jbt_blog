@@ -1493,11 +1493,11 @@ div.go-top div.stick {
     display: flex;
     align-items: center;
     padding: 1.5rem;
-    background: rgba(255, 255, 255, 0.05);
-    border: 1px solid rgba(255, 255, 255, 0.12);
+    background: #ffffff;
+    border: 1px solid rgba(0, 0, 0, 0.08);
     border-radius: 8px;
     text-decoration: none;
-    color: #d0d0d0;
+    color: #666;
     transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
     position: relative;
     overflow: hidden;
@@ -1511,16 +1511,17 @@ div.go-top div.stick {
     left: 0;
     right: 0;
     bottom: 0;
-    background: rgba(255, 255, 255, 0.03);
+    background: rgba(0, 0, 0, 0.02);
     opacity: 0;
     transition: opacity 0.3s ease;
 }
 
 .nav-link:hover {
+    text-decoration: none;
     transform: translateY(-1px);
-    border-color: rgba(255, 255, 255, 0.2);
-    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.08);
-    color: #f0f0f0;
+    border-color: rgba(0, 0, 0, 0.15);
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.1);
+    color: #333;
 }
 
 .nav-link:hover::before {
@@ -1546,8 +1547,6 @@ div.go-top div.stick {
     justify-content: center;
     width: 40px;
     height: 40px;
-    background: rgba(255, 255, 255, 0.08);
-    border-radius: 6px;
     flex-shrink: 0;
     transition: all 0.3s ease;
     position: relative;
@@ -1556,17 +1555,16 @@ div.go-top div.stick {
 
 .nav-icon i {
     font-size: 1rem;
-    color: #aaa;
+    color: #888;
     transition: all 0.3s ease;
 }
 
 .nav-link:hover .nav-icon {
-    background: rgba(255, 255, 255, 0.1);
     transform: scale(1.05);
 }
 
 .nav-link:hover .nav-icon i {
-    color: #f7f7f7;
+    color: #555;
 }
 
 .nav-content {
@@ -1588,7 +1586,7 @@ div.go-top div.stick {
 .nav-label {
     display: block;
     font-size: 0.75rem;
-    color: #aaa;
+    color: #999;
     font-weight: 500;
     text-transform: uppercase;
     letter-spacing: 0.8px;
@@ -1610,7 +1608,7 @@ div.go-top div.stick {
 }
 
 .nav-link:hover .nav-title {
-    color: #f0f0f0;
+    color: #333;
 }
 
 /* 响应式设计 */

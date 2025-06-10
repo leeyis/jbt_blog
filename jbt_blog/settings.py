@@ -66,8 +66,14 @@ MDEDITOR_CONFIGS = {
         'tex': True,  # 是否开启 tex 图表功能
         'flow_chart': True,  # 是否开启流程图功能
         'sequence': True,  # 是否开启序列图功能
+        'imageUpload': True,  # 启用图片上传功能
+        'imageDrop': True,  # 启用图片拖拽上传
+        'imagePaste': True,  # 启用图片粘贴上传
     }
 }
+
+# MDEditor 图片上传配置
+MDEDITOR_UPLOAD_PATH = 'editor/'  # 图片上传路径
 
 X_FRAME_OPTIONS = 'SAMEORIGIN'  # 新增这一行
 MIDDLEWARE = [

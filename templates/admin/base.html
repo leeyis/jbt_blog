@@ -1,0 +1,50 @@
+{% extends "admin/base.html" %}
+{% load static %}
+
+{% block extrahead %}
+    {{ block.super }}
+    <!-- MDEditor 增强功能 -->
+    <script src="{% static 'js/mdeditor-enhance.js' %}"></script>
+{% endblock %}
+
+{% block extrastyle %}
+    {{ block.super }}
+    <!-- MDEditor 增强样式 -->
+    <style>
+        .mdeditor-enhance {
+            position: relative;
+        }
+        
+        .mdeditor-enhance::before {
+            content: "支持拖拽或粘贴图片上传";
+            position: absolute;
+            top: -20px;
+            right: 0;
+            font-size: 12px;
+            color: #666;
+            background: #f8f9fa;
+            padding: 2px 8px;
+            border-radius: 3px;
+            border: 1px solid #ddd;
+            z-index: 1000;
+        }
+        
+        .drag-over {
+            border: 2px dashed #007cba !important;
+            background-color: rgba(0, 124, 186, 0.1) !important;
+        }
+        
+        .upload-indicator {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: rgba(0, 0, 0, 0.8);
+            color: white;
+            padding: 20px;
+            border-radius: 5px;
+            z-index: 9999;
+            font-size: 14px;
+        }
+    </style>
+{% endblock %} 
