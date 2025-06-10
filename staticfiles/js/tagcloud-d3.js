@@ -10,9 +10,7 @@ class EllipticalTagCloud {
         this.options = {
             width: options.width || 300,
             height: options.height || 180,
-            radiusX: options.radiusX || 100,  // 椭球体X轴半径
-            radiusY: options.radiusY || 60,   // 椭球体Y轴半径
-            radiusZ: options.radiusZ || 80,   // 椭球体Z轴半径
+            radius: options.radius || 80,  // 3D球体半径
             minFontSize: options.minFontSize || 12,
             maxFontSize: options.maxFontSize || 20,
             padding: options.padding || 5,
@@ -29,18 +27,6 @@ class EllipticalTagCloud {
         this.rotation = { x: 0, y: 0 };
         this.isDragging = false;
         this.lastMousePos = { x: 0, y: 0 };
-        
-        // 自动旋转配置
-        this.autoRotate = true;
-        this.autoRotateSpeed = 0.002; // 旋转速度
-        this.lastInteractionTime = Date.now();
-        this.autoRotateDelay = 3000; // 停止交互后3秒开始自动旋转
-        
-        // 缩放配置
-        this.scale = 1.0;
-        this.minScale = 0.5;
-        this.maxScale = 3.0;
-        this.scaleSpeed = 0.1;
         
         this.init();
     }
@@ -115,30 +101,26 @@ class EllipticalTagCloud {
             const bbox = text.node().getBBox();
             text.remove();
             
-            // 使用球面黄金螺旋分布，然后正确映射到椭球面
+            // 使用黄金螺旋分布在球面上生成更均匀的初始位置
             const goldenAngle = Math.PI * (3 - Math.sqrt(5)); // 黄金角度
             const theta = goldenAngle * i; // 方位角
-            const v = i / (this.processedData.length - 1); // 标准化参数[0,1]
-            const phi = Math.acos(1 - 2 * v); // 极角，均匀分布
+            const y = 1 - (i / (this.processedData.length - 1)) * 2; // y从1到-1
+            const radius = Math.sqrt(1 - y * y); // 当前层的半径
+            const phi = Math.acos(y); // 极角
             
-            // 标准球面坐标
-            const sphereX = Math.sin(phi) * Math.cos(theta);
-            const sphereY = Math.cos(phi);
-            const sphereZ = Math.sin(phi) * Math.sin(theta);
-            
-            // 映射到椭球面：将球面坐标缩放到椭球
-            const ellipsoidX = this.options.radiusX * sphereX;
-            const ellipsoidY = this.options.radiusY * sphereY;
-            const ellipsoidZ = this.options.radiusZ * sphereZ;
+            // 3D球面坐标（球坐标系）
+            const sphereX = this.options.radius * radius * Math.cos(theta);
+            const sphereY = this.options.radius * y;
+            const sphereZ = this.options.radius * radius * Math.sin(theta);
             
             return {
                 ...d,
                 width: bbox.width + this.options.padding * 2,
                 height: bbox.height + this.options.padding * 2,
                 // 3D坐标
-                x3d: ellipsoidX,
-                y3d: ellipsoidY,
-                z3d: ellipsoidZ,
+                x3d: sphereX,
+                y3d: sphereY,
+                z3d: sphereZ,
                 // 投影到2D的坐标（初始化）
                 x: this.options.width / 2,
                 y: this.options.height / 2,
@@ -147,7 +129,7 @@ class EllipticalTagCloud {
                 phi: phi,
                 // 可见性和深度
                 visible: true,
-                depth: ellipsoidZ
+                depth: sphereZ
             };
         });
         
@@ -188,19 +170,14 @@ class EllipticalTagCloud {
             rotated = this.rotateX(rotated, this.rotation.x);
             rotated = this.rotateY(rotated, this.rotation.y);
             
-            // 应用缩放并投影到2D平面
-            const scaledX = rotated.x * this.scale;
-            const scaledY = rotated.y * this.scale;
-            
-            node.x = centerX + scaledX;
-            node.y = centerY - scaledY; // Y轴反转以匹配屏幕坐标
+            // 正交投影到2D平面
+            node.x = centerX + rotated.x;
+            node.y = centerY - rotated.y; // Y轴反转以匹配屏幕坐标
             node.depth = rotated.z;
             
-            // 计算透明度（背面的标签变暗但不隐藏）
-            node.visible = true; // 所有标签都保持可见
-            // 使用平滑的透明度渐变，背面标签最低透明度为0.6，减小前后差异
-            const normalizedZ = (rotated.z + this.options.radiusZ) / (2 * this.options.radiusZ);
-            node.opacity = Math.max(0.6, Math.min(1.0, 0.6 + normalizedZ * 0.4));
+            // 计算可见性（背面的标签稍微透明）
+            node.visible = rotated.z > -this.options.radius * 0.8;
+            node.opacity = rotated.z > 0 ? 1 : Math.max(0.3, (rotated.z + this.options.radius) / this.options.radius);
         });
         
         // 按深度排序（Z坐标），远的在前面绘制
@@ -209,200 +186,97 @@ class EllipticalTagCloud {
     
     setupMouseInteraction() {
         // 添加鼠标拖拽旋转功能
-        this.dragStartTime = 0;
-        this.dragThreshold = 5; // 像素阈值，区分点击和拖拽
-        
         this.svg
             .on('mousedown', (event) => {
                 if (event.button === 0) { // 左键
-                    this.dragStartTime = Date.now();
-                    this.dragStartPos = { x: event.clientX, y: event.clientY };
+                    this.isDragging = true;
                     this.lastMousePos = { x: event.clientX, y: event.clientY };
-                    this.hasDragged = false;
+                    event.preventDefault();
                 }
             })
             .on('mousemove', (event) => {
-                if (this.dragStartTime > 0) {
-                    const deltaX = event.clientX - this.dragStartPos.x;
-                    const deltaY = event.clientY - this.dragStartPos.y;
-                    const dragDistance = Math.sqrt(deltaX * deltaX + deltaY * deltaY);
+                if (this.isDragging) {
+                    const deltaX = event.clientX - this.lastMousePos.x;
+                    const deltaY = event.clientY - this.lastMousePos.y;
                     
-                    // 只有当移动距离超过阈值时才开始拖拽
-                    if (dragDistance > this.dragThreshold) {
-                        this.isDragging = true;
-                        this.hasDragged = true;
-                        
-                        const deltaXMove = event.clientX - this.lastMousePos.x;
-                        const deltaYMove = event.clientY - this.lastMousePos.y;
-                        
-                        // 将鼠标移动转换为旋转（纵向翻转模式）
-                        this.rotation.x += deltaXMove * 0.01;  // 水平移动控制纵向翻转
-                        this.rotation.y += deltaYMove * 0.01;  // 垂直移动控制水平旋转
-                        
-                        // 限制X轴旋转范围，防止翻转过度
-                        this.rotation.x = Math.max(-Math.PI / 2, Math.min(Math.PI / 2, this.rotation.x));
-                        
-                        // 更新投影和显示
-                        this.project3DTo2D();
-                        this.tick();
-                        
-                        this.svg.style('cursor', 'grabbing');
-                        
-                        // 更新最后交互时间，重置自动旋转
-                        this.lastInteractionTime = Date.now();
-                    }
+                    // 将鼠标移动转换为旋转（调整灵敏度）
+                    this.rotation.y += deltaX * 0.01;
+                    this.rotation.x += deltaY * 0.01;
+                    
+                    // 限制X轴旋转范围，防止翻转过度
+                    this.rotation.x = Math.max(-Math.PI / 2, Math.min(Math.PI / 2, this.rotation.x));
+                    
+                    // 更新投影和显示
+                    this.project3DTo2D();
+                    this.tick();
                     
                     this.lastMousePos = { x: event.clientX, y: event.clientY };
+                    event.preventDefault();
                 }
             })
-            .on('mouseup', (event) => {
-                // 如果没有拖拽，允许点击事件冒泡
-                if (!this.hasDragged) {
-                    // 不阻止事件，让标签的点击事件正常处理
-                } else {
-                    // 如果进行了拖拽，更新交互时间并启用自动旋转
-                    this.lastInteractionTime = Date.now();
-                    this.autoRotate = true;
-                }
-                
+            .on('mouseup', () => {
                 this.isDragging = false;
-                this.dragStartTime = 0;
-                this.hasDragged = false;
-                this.svg.style('cursor', 'default');
             })
             .on('mouseleave', () => {
                 this.isDragging = false;
-                this.dragStartTime = 0;
-                this.hasDragged = false;
-                this.svg.style('cursor', 'default');
             })
-            .style('cursor', 'default');
+            .style('cursor', 'grab');
             
         // 添加触摸支持（移动设备）
-        this.touchStartDistance = 0;
-        this.initialScale = 1.0;
-        
         this.svg
             .on('touchstart', (event) => {
                 if (event.touches.length === 1) {
-                    // 单指拖拽旋转
                     this.isDragging = true;
                     const touch = event.touches[0];
                     this.lastMousePos = { x: touch.clientX, y: touch.clientY };
                     event.preventDefault();
-                } else if (event.touches.length === 2) {
-                    // 双指缩放
-                    this.isDragging = false;
-                    const touch1 = event.touches[0];
-                    const touch2 = event.touches[1];
-                    this.touchStartDistance = Math.sqrt(
-                        Math.pow(touch2.clientX - touch1.clientX, 2) +
-                        Math.pow(touch2.clientY - touch1.clientY, 2)
-                    );
-                    this.initialScale = this.scale;
-                    event.preventDefault();
                 }
             })
             .on('touchmove', (event) => {
-                if (event.touches.length === 1 && this.isDragging) {
-                    // 单指旋转
+                if (this.isDragging && event.touches.length === 1) {
                     const touch = event.touches[0];
                     const deltaX = touch.clientX - this.lastMousePos.x;
                     const deltaY = touch.clientY - this.lastMousePos.y;
                     
-                    this.rotation.x += deltaX * 0.01;  // 水平移动控制纵向翻转
-                    this.rotation.y += deltaY * 0.01;  // 垂直移动控制水平旋转
+                    this.rotation.y += deltaX * 0.01;
+                    this.rotation.x += deltaY * 0.01;
                     this.rotation.x = Math.max(-Math.PI / 2, Math.min(Math.PI / 2, this.rotation.x));
                     
                     this.project3DTo2D();
                     this.tick();
                     
                     this.lastMousePos = { x: touch.clientX, y: touch.clientY };
-                    this.lastInteractionTime = Date.now();
-                    event.preventDefault();
-                } else if (event.touches.length === 2) {
-                    // 双指缩放
-                    const touch1 = event.touches[0];
-                    const touch2 = event.touches[1];
-                    const currentDistance = Math.sqrt(
-                        Math.pow(touch2.clientX - touch1.clientX, 2) +
-                        Math.pow(touch2.clientY - touch1.clientY, 2)
-                    );
-                    
-                    if (this.touchStartDistance > 0) {
-                        const scaleChange = currentDistance / this.touchStartDistance;
-                        const newScale = Math.max(this.minScale, Math.min(this.maxScale, this.initialScale * scaleChange));
-                        
-                        if (newScale !== this.scale) {
-                            this.scale = newScale;
-                            this.project3DTo2D();
-                            this.tick();
-                            this.lastInteractionTime = Date.now();
-                        }
-                    }
                     event.preventDefault();
                 }
             })
-            .on('touchend', (event) => {
-                if (event.touches.length === 0) {
-                    this.isDragging = false;
-                    this.touchStartDistance = 0;
-                }
+            .on('touchend', () => {
+                this.isDragging = false;
             });
-            
-        // 添加鼠标滚轮缩放
-        this.svg.on('wheel', (event) => {
-            event.preventDefault();
-            
-            // 计算缩放变化
-            const delta = -event.deltaY * 0.001;
-            const newScale = Math.max(this.minScale, Math.min(this.maxScale, this.scale + delta));
-            
-            if (newScale !== this.scale) {
-                this.scale = newScale;
-                
-                // 更新投影和显示
-                this.project3DTo2D();
-                this.tick();
-                
-                // 更新交互时间
-                this.lastInteractionTime = Date.now();
-            }
-        });
     }
     
 
     
     setupForceSimulation() {
-        // 椭球面约束力 - 在3D空间中工作
-        const ellipsoidForce = (alpha) => {
+        // 球面约束力 - 在3D空间中工作
+        const sphereForce = (alpha) => {
             this.nodes.forEach(node => {
-                // 计算椭球面方程的值：(x/a)² + (y/b)² + (z/c)² = 1
-                const ellipsoidValue = 
-                    (node.x3d * node.x3d) / (this.options.radiusX * this.options.radiusX) +
-                    (node.y3d * node.y3d) / (this.options.radiusY * this.options.radiusY) +
-                    (node.z3d * node.z3d) / (this.options.radiusZ * this.options.radiusZ);
+                // 计算3D空间中距离球心的距离
+                const distance3D = Math.sqrt(
+                    node.x3d * node.x3d + 
+                    node.y3d * node.y3d + 
+                    node.z3d * node.z3d
+                );
                 
-                // 如果节点偏离椭球面，施加约束力
-                const targetValue = 0.95; // 更接近椭球面
-                if (Math.abs(ellipsoidValue - targetValue) > 0.05) {
-                    const force = (ellipsoidValue - targetValue) * alpha * 0.05;
+                // 如果节点偏离球面，施加约束力
+                const targetRadius = this.options.radius * 0.95;
+                if (Math.abs(distance3D - targetRadius) > 5) {
+                    const force = (distance3D - targetRadius) * alpha * 0.1;
+                    const scale = force / distance3D;
                     
-                    // 计算椭球面梯度方向
-                    const gradX = (2 * node.x3d) / (this.options.radiusX * this.options.radiusX);
-                    const gradY = (2 * node.y3d) / (this.options.radiusY * this.options.radiusY);
-                    const gradZ = (2 * node.z3d) / (this.options.radiusZ * this.options.radiusZ);
-                    
-                    // 归一化梯度
-                    const gradLength = Math.sqrt(gradX * gradX + gradY * gradY + gradZ * gradZ);
-                    if (gradLength > 0) {
-                        const scale = force / gradLength;
-                        
-                        // 在3D空间中调整位置
-                        node.x3d -= gradX * scale;
-                        node.y3d -= gradY * scale;
-                        node.z3d -= gradZ * scale;
-                    }
+                    // 在3D空间中调整位置
+                    node.x3d -= node.x3d * scale;
+                    node.y3d -= node.y3d * scale;
+                    node.z3d -= node.z3d * scale;
                 }
             });
         };
@@ -427,7 +301,7 @@ class EllipticalTagCloud {
                     const minDistance = radiusA + radiusB + 8;
                     
                     if (distance > 0 && distance < minDistance) {
-                        const pushForce = (minDistance - distance) * alpha * 0.2;
+                        const pushForce = (minDistance - distance) * alpha * 0.5;
                         const scale = pushForce / distance;
                         
                         // 在3D空间中推开节点
@@ -453,7 +327,7 @@ class EllipticalTagCloud {
             }
             
             // 应用力
-            ellipsoidForce(this.simulationAlpha);
+            sphereForce(this.simulationAlpha);
             collision3D(this.simulationAlpha);
             
             // 重新投影到2D
@@ -462,8 +336,8 @@ class EllipticalTagCloud {
             // 更新显示
             this.tick();
             
-            // 降低alpha值，更慢的收敛让分布更稳定
-            this.simulationAlpha *= 0.995;
+            // 降低alpha值
+            this.simulationAlpha *= 0.99;
             
             // 继续下一帧
             requestAnimationFrame(simulate);
@@ -471,31 +345,6 @@ class EllipticalTagCloud {
         
         // 启动模拟
         requestAnimationFrame(simulate);
-        
-        // 启动自动旋转
-        this.startAutoRotation();
-    }
-    
-    startAutoRotation() {
-        const autoRotate = () => {
-            const now = Date.now();
-            const timeSinceInteraction = now - this.lastInteractionTime;
-            
-            // 如果启用自动旋转且超过延迟时间且没有正在拖拽
-            if (this.autoRotate && timeSinceInteraction > this.autoRotateDelay && !this.isDragging && !this.clickedTag) {
-                // 缓慢纵向翻转（绕X轴旋转）
-                this.rotation.x += this.autoRotateSpeed;
-                
-                // 重新投影和更新显示
-                this.project3DTo2D();
-                this.tick();
-            }
-            
-            // 继续下一帧
-            requestAnimationFrame(autoRotate);
-        };
-        
-        requestAnimationFrame(autoRotate);
     }
     
     tick() {
@@ -504,25 +353,24 @@ class EllipticalTagCloud {
             this.tagGroups
                 .sort((a, b) => a.depth - b.depth)
                 .attr('transform', d => `translate(${d.x}, ${d.y})`)
-                .style('opacity', d => d.opacity);
+                .style('opacity', d => d.visible ? d.opacity : 0.1);
                 
             // 更新文本颜色深度效果
             if (this.textElements) {
                 this.textElements
                     .style('fill', d => {
                         const baseColor = d.color;
-                        // 根据深度平滑调整颜色亮度，避免突兀变化
-                        const normalizedDepth = (d.depth + this.options.radiusZ) / (2 * this.options.radiusZ);
-                        const factor = Math.max(0.7, Math.min(1.0, 0.7 + normalizedDepth * 0.3));
+                        // 根据深度调整颜色亮度
+                        const factor = d.depth > 0 ? 1 : 0.6;
                         return this.adjustColorBrightness(baseColor, factor);
                     });
             }
             
-            // 保持背景固定透明度，避免拖拽时闪烁
+            // 更新背景深度效果
             if (this.backgroundElements) {
                 this.backgroundElements
-                    .style('fill-opacity', 0.15)
-                    .style('stroke-opacity', 0.3);
+                    .style('fill-opacity', d => d.visible ? d.opacity * 0.15 : 0.05)
+                    .style('stroke-opacity', d => d.visible ? d.opacity * 0.3 : 0.1);
             }
         }
     }
@@ -628,16 +476,8 @@ class EllipticalTagCloud {
     }
     
     handleMouseOver(event, d) {
-        // 如果正在拖拽，不执行悬停效果
-        if (this.isDragging || this.hasDragged) {
-            return;
-        }
-        
         // 暂停3D模拟，防止抖动
         this.simulationActive = false;
-        
-        // 更新交互时间，暂停自动旋转
-        this.lastInteractionTime = Date.now();
         
         // 获取当前标签组
         const tagGroup = d3.select(event.target.parentNode);
@@ -672,11 +512,6 @@ class EllipticalTagCloud {
     }
     
     handleMouseOut(event, d) {
-        // 如果正在拖拽，不执行悬停恢复效果
-        if (this.isDragging || this.hasDragged) {
-            return;
-        }
-        
         // 获取当前标签组
         const tagGroup = d3.select(event.target.parentNode);
         
@@ -728,16 +563,13 @@ class EllipticalTagCloud {
         
         // 保存被点击的标签引用
         this.clickedTag = clickedData;
-        // 保存原始位置用于恢复
-        this.originalClickedPosition = { x: clickedData.x, y: clickedData.y };
         
         // 计算中心位置
         const centerX = this.options.width / 2;
         const centerY = this.options.height / 2;
         
-        // 暂停3D模拟和自动旋转
+        // 暂停3D模拟以避免干扰动画
         this.simulationActive = false;
-        this.autoRotate = false;
         
         // 对所有标签进行动画处理
         this.tagGroups
@@ -746,7 +578,9 @@ class EllipticalTagCloud {
             .ease(d3.easeBackOut.overshoot(1.2))
             .attr('transform', (d) => {
                 if (d === clickedData) {
-                    // 被点击的标签：视觉上移动到中心并放大，但不修改实际坐标
+                    // 被点击的标签：移动到中心并放大
+                    d.x = centerX;
+                    d.y = centerY;
                     console.log('移动标签到中心:', centerX, centerY);
                     return `translate(${centerX}, ${centerY}) scale(1.5)`;
                 } else {
@@ -785,23 +619,23 @@ class EllipticalTagCloud {
         // 移除光晕效果
         this.tagGroups.selectAll('.click-glow').remove();
         
-        // 重新计算3D投影以获取正确的位置
-        this.project3DTo2D();
-        
-        // 恢复所有标签的状态，使用重新投影后的坐标
+        // 恢复所有标签的状态
         this.tagGroups
             .transition()
             .duration(400)
             .ease(d3.easeQuadOut)
             .attr('transform', (d) => `translate(${d.x}, ${d.y}) scale(1)`)
             .style('opacity', 1);
+            
+        // 解除所有节点的固定位置约束
+        this.nodes.forEach(node => {
+            node.fx = null;
+            node.fy = null;
+        });
         
         // 重启3D力模拟
         this.simulationActive = true;
         this.simulationAlpha = 0.3;
-        
-        // 恢复自动旋转（延迟一段时间后）
-        this.lastInteractionTime = Date.now();
         
         // 清除点击标签引用
         this.clickedTag = null;
@@ -948,9 +782,7 @@ class EllipticalTagCloud {
     resize(newWidth, newHeight) {
         this.options.width = newWidth;
         this.options.height = newHeight;
-        this.options.radiusX = newWidth * 0.4;
-        this.options.radiusY = newHeight * 0.35;
-        this.options.radiusZ = Math.min(newWidth, newHeight) * 0.3;
+        this.options.radius = Math.min(newWidth, newHeight) * 0.35;
         
         this.svg
             .attr('width', newWidth)
@@ -1000,9 +832,8 @@ function initEllipticalTagCloud() {
     const options = {
         width: containerWidth,
         height: containerHeight,
-        radiusX: containerWidth * 0.4,
-        radiusY: containerHeight * 0.35,
-        radiusZ: Math.min(containerWidth, containerHeight) * 0.3,
+        ellipseA: containerWidth * 0.35,
+        ellipseB: containerHeight * 0.35,
         showEllipse: false // 设为true可显示椭圆边界用于调试
     };
     

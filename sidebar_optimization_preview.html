@@ -1,0 +1,608 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>侧边栏优化设计预览</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        
+        body {
+            font-family: 'Inter', Arial, sans-serif;
+            background: #f0f2f5;
+            padding: 20px;
+        }
+
+        .preview-container {
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        .preview-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+            gap: 30px;
+            margin-top: 20px;
+        }
+
+        .design-preview {
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            overflow: hidden;
+        }
+
+        .preview-header {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+            padding: 20px;
+            text-align: center;
+        }
+
+        .preview-title {
+            font-size: 1.2rem;
+            font-weight: 600;
+            margin-bottom: 5px;
+        }
+
+        .preview-desc {
+            font-size: 0.9rem;
+            opacity: 0.9;
+        }
+
+        /* 当前样式 */
+        .current-sidebar {
+            background: linear-gradient(180deg, #2c3e50 0%, #34495e 100%);
+            width: 100%;
+            min-height: 600px;
+            color: white;
+            padding: 20px;
+        }
+
+        .profile-section {
+            text-align: center;
+            margin-bottom: 25px;
+        }
+
+        .avatar {
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            background: #47BAC1;
+            margin: 0 auto 15px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2rem;
+        }
+
+        .brand-title {
+            font-size: 1.5rem;
+            margin-bottom: 8px;
+            color: white;
+        }
+
+        .brand-tagline {
+            font-size: 0.9rem;
+            color: #bdc3c7;
+            margin-bottom: 20px;
+            font-style: italic;
+        }
+
+        .social-links {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            margin-bottom: 25px;
+        }
+
+        .social-link {
+            width: 35px;
+            height: 35px;
+            background: rgba(71, 186, 193, 0.2);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #47BAC1;
+            transition: all 0.3s ease;
+        }
+
+        .social-link:hover {
+            background: #47BAC1;
+            color: white;
+            transform: translateY(-2px);
+        }
+
+        .nav-card {
+            background: rgba(255,255,255,0.1);
+            border-radius: 10px;
+            padding: 15px;
+            margin-bottom: 15px;
+            backdrop-filter: blur(10px);
+        }
+
+        .section-title {
+            font-size: 1rem;
+            color: #47BAC1;
+            margin-bottom: 12px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .nav-list {
+            list-style: none;
+        }
+
+        .nav-item {
+            margin-bottom: 8px;
+        }
+
+        .nav-item a {
+            color: rgba(255,255,255,0.8);
+            text-decoration: none;
+            font-size: 0.9rem;
+            transition: color 0.3s ease;
+            display: flex;
+            justify-content: space-between;
+        }
+
+        .nav-item a:hover {
+            color: #47BAC1;
+        }
+
+        .count {
+            color: #47BAC1;
+            font-size: 0.8rem;
+        }
+
+        /* 现代卡片式设计 */
+        .modern-sidebar {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            padding: 25px;
+            color: white;
+        }
+
+        .modern-card {
+            background: rgba(255,255,255,0.95);
+            color: #333;
+            border-radius: 15px;
+            padding: 20px;
+            margin-bottom: 20px;
+            box-shadow: 0 8px 25px rgba(0,0,0,0.1);
+            backdrop-filter: blur(20px);
+        }
+
+        .modern-avatar {
+            width: 90px;
+            height: 90px;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            border-radius: 50%;
+            margin: 0 auto 15px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2.5rem;
+            color: white;
+            box-shadow: 0 8px 25px rgba(102, 126, 234, 0.3);
+        }
+
+        .modern-title {
+            font-size: 1.6rem;
+            font-weight: 700;
+            color: #2c3e50;
+            margin-bottom: 8px;
+        }
+
+        .modern-tagline {
+            color: #666;
+            font-style: italic;
+            margin-bottom: 20px;
+        }
+
+        .modern-social {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+
+        .modern-social-btn {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+            padding: 10px;
+            border-radius: 10px;
+            text-align: center;
+            transition: all 0.3s ease;
+        }
+
+        .modern-social-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 20px rgba(102, 126, 234, 0.4);
+        }
+
+        .modern-nav-title {
+            color: #667eea;
+            font-weight: 600;
+            font-size: 1.1rem;
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .modern-nav-item {
+            background: #f8f9ff;
+            margin-bottom: 8px;
+            border-radius: 8px;
+            transition: all 0.3s ease;
+        }
+
+        .modern-nav-item:hover {
+            background: #667eea;
+            transform: translateX(5px);
+        }
+
+        .modern-nav-item a {
+            color: #333;
+            padding: 12px 15px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            text-decoration: none;
+            border-radius: 8px;
+        }
+
+        .modern-nav-item:hover a {
+            color: white;
+        }
+
+        /* 极简设计 */
+        .minimal-sidebar {
+            background: #ffffff;
+            color: #333;
+            padding: 30px 25px;
+            border-right: 1px solid #e9ecef;
+        }
+
+        .minimal-profile {
+            text-align: center;
+            padding-bottom: 30px;
+            border-bottom: 2px solid #f1f3f4;
+            margin-bottom: 30px;
+        }
+
+        .minimal-avatar {
+            width: 70px;
+            height: 70px;
+            background: #667eea;
+            border-radius: 50%;
+            margin: 0 auto 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2rem;
+            color: white;
+        }
+
+        .minimal-title {
+            font-size: 1.4rem;
+            font-weight: 600;
+            color: #2c3e50;
+            margin-bottom: 5px;
+        }
+
+        .minimal-tagline {
+            color: #666;
+            font-size: 0.9rem;
+        }
+
+        .minimal-section {
+            margin-bottom: 30px;
+        }
+
+        .minimal-section-title {
+            font-size: 1rem;
+            font-weight: 600;
+            color: #2c3e50;
+            margin-bottom: 15px;
+            padding-bottom: 8px;
+            border-bottom: 1px solid #e9ecef;
+        }
+
+        .minimal-list {
+            list-style: none;
+        }
+
+        .minimal-item {
+            margin-bottom: 10px;
+        }
+
+        .minimal-item a {
+            color: #666;
+            text-decoration: none;
+            font-size: 0.9rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 8px 0;
+            border-bottom: 1px solid transparent;
+            transition: all 0.3s ease;
+        }
+
+        .minimal-item a:hover {
+            color: #667eea;
+            border-bottom-color: #667eea;
+        }
+
+        /* 暗色主题 */
+        .dark-sidebar {
+            background: #1a1a2e;
+            color: #eee;
+            padding: 25px;
+        }
+
+        .dark-card {
+            background: #16213e;
+            border: 1px solid #0f3460;
+            border-radius: 12px;
+            padding: 20px;
+            margin-bottom: 20px;
+        }
+
+        .dark-avatar {
+            width: 85px;
+            height: 85px;
+            background: linear-gradient(135deg, #0f3460, #533483);
+            border-radius: 50%;
+            margin: 0 auto 15px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2.2rem;
+            color: #e94560;
+        }
+
+        .dark-title {
+            color: #f5f5f5;
+            font-size: 1.5rem;
+            font-weight: 600;
+            margin-bottom: 8px;
+        }
+
+        .dark-tagline {
+            color: #b8b8b8;
+            margin-bottom: 20px;
+        }
+
+        .dark-section-title {
+            color: #e94560;
+            font-weight: 600;
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .dark-nav-item a {
+            color: #ccc;
+            text-decoration: none;
+            display: flex;
+            justify-content: space-between;
+            padding: 10px 0;
+            border-bottom: 1px solid rgba(233, 69, 96, 0.1);
+            transition: all 0.3s ease;
+        }
+
+        .dark-nav-item a:hover {
+            color: #e94560;
+            padding-left: 10px;
+        }
+
+        .icon { font-size: 1rem; }
+    </style>
+</head>
+<body>
+    <div class="preview-container">
+        <div style="text-align: center; margin-bottom: 30px;">
+            <h1 style="font-size: 2.5rem; color: #2c3e50; margin-bottom: 10px;">🎨 侧边栏整体优化设计</h1>
+            <p style="color: #666; font-size: 1.1rem;">完整左侧区域的多种设计方案对比</p>
+        </div>
+
+        <div class="preview-grid">
+            <!-- 当前样式 -->
+            <div class="design-preview">
+                <div class="preview-header">
+                    <div class="preview-title">当前样式</div>
+                    <div class="preview-desc">现有的侧边栏设计</div>
+                </div>
+                <div class="current-sidebar">
+                    <div class="profile-section">
+                        <div class="avatar">👨‍💻</div>
+                        <div class="brand-title">金笔头博客</div>
+                        <div class="brand-tagline">Stay hungry, Stay foolish!</div>
+                        <div class="social-links">
+                            <div class="social-link">📧</div>
+                            <div class="social-link">💬</div>
+                            <div class="social-link">🐙</div>
+                        </div>
+                    </div>
+                    
+                    <div class="nav-card">
+                        <div class="section-title">📁 分类导航</div>
+                        <ul class="nav-list">
+                            <li class="nav-item"><a href="#">人工智能 <span class="count">(15)</span></a></li>
+                            <li class="nav-item"><a href="#">机器学习 <span class="count">(8)</span></a></li>
+                            <li class="nav-item"><a href="#">技术分享 <span class="count">(12)</span></a></li>
+                        </ul>
+                    </div>
+                    
+                    <div class="nav-card">
+                        <div class="section-title">📅 文章归档</div>
+                        <ul class="nav-list">
+                            <li class="nav-item"><a href="#">2025年1月 <span class="count">(5)</span></a></li>
+                            <li class="nav-item"><a href="#">2024年12月 <span class="count">(8)</span></a></li>
+                        </ul>
+                    </div>
+                    
+                    <div class="nav-card">
+                        <div class="section-title">🏷️ 标签云</div>
+                        <div style="display: flex; flex-wrap: wrap; gap: 8px; justify-content: center;">
+                            <span style="background: rgba(71,186,193,0.3); padding: 5px 10px; border-radius: 15px; font-size: 0.8rem;">AI</span>
+                            <span style="background: rgba(71,186,193,0.3); padding: 5px 10px; border-radius: 15px; font-size: 0.8rem;">ML</span>
+                            <span style="background: rgba(71,186,193,0.3); padding: 5px 10px; border-radius: 15px; font-size: 0.8rem;">NLP</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 现代卡片式 -->
+            <div class="design-preview">
+                <div class="preview-header">
+                    <div class="preview-title">现代卡片式</div>
+                    <div class="preview-desc">毛玻璃效果 + 渐变设计</div>
+                </div>
+                <div class="modern-sidebar">
+                    <div class="modern-card profile-section">
+                        <div class="modern-avatar">👨‍💻</div>
+                        <div class="modern-title">金笔头博客</div>
+                        <div class="modern-tagline">Stay hungry, Stay foolish!</div>
+                        <div class="modern-social">
+                            <div class="modern-social-btn">📧</div>
+                            <div class="modern-social-btn">💬</div>
+                            <div class="modern-social-btn">🐙</div>
+                        </div>
+                    </div>
+                    
+                    <div class="modern-card">
+                        <div class="modern-nav-title">📁 分类导航</div>
+                        <div class="modern-nav-item"><a href="#">人工智能 <span class="count">(15)</span></a></div>
+                        <div class="modern-nav-item"><a href="#">机器学习 <span class="count">(8)</span></a></div>
+                        <div class="modern-nav-item"><a href="#">技术分享 <span class="count">(12)</span></a></div>
+                    </div>
+                    
+                    <div class="modern-card">
+                        <div class="modern-nav-title">📅 归档</div>
+                        <div class="modern-nav-item"><a href="#">2025年1月 <span class="count">(5)</span></a></div>
+                        <div class="modern-nav-item"><a href="#">2024年12月 <span class="count">(8)</span></a></div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 极简设计 -->
+            <div class="design-preview">
+                <div class="preview-header">
+                    <div class="preview-title">极简设计</div>
+                    <div class="preview-desc">简洁线条 + 高效信息</div>
+                </div>
+                <div class="minimal-sidebar">
+                    <div class="minimal-profile">
+                        <div class="minimal-avatar">👨‍💻</div>
+                        <div class="minimal-title">金笔头博客</div>
+                        <div class="minimal-tagline">Stay hungry, Stay foolish!</div>
+                    </div>
+                    
+                    <div class="minimal-section">
+                        <div class="minimal-section-title">分类导航</div>
+                        <ul class="minimal-list">
+                            <li class="minimal-item"><a href="#">人工智能 <span>(15)</span></a></li>
+                            <li class="minimal-item"><a href="#">机器学习 <span>(8)</span></a></li>
+                            <li class="minimal-item"><a href="#">技术分享 <span>(12)</span></a></li>
+                        </ul>
+                    </div>
+                    
+                    <div class="minimal-section">
+                        <div class="minimal-section-title">文章归档</div>
+                        <ul class="minimal-list">
+                            <li class="minimal-item"><a href="#">2025年1月 <span>(5)</span></a></li>
+                            <li class="minimal-item"><a href="#">2024年12月 <span>(8)</span></a></li>
+                        </ul>
+                    </div>
+                    
+                    <div class="minimal-section">
+                        <div class="minimal-section-title">热门标签</div>
+                        <div style="display: flex; flex-wrap: wrap; gap: 6px;">
+                            <span style="background: #f1f3f4; padding: 4px 8px; border-radius: 12px; font-size: 0.8rem; color: #667eea;">AI</span>
+                            <span style="background: #f1f3f4; padding: 4px 8px; border-radius: 12px; font-size: 0.8rem; color: #667eea;">ML</span>
+                            <span style="background: #f1f3f4; padding: 4px 8px; border-radius: 12px; font-size: 0.8rem; color: #667eea;">NLP</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 暗色主题 -->
+            <div class="design-preview">
+                <div class="preview-header">
+                    <div class="preview-title">暗色科技风</div>
+                    <div class="preview-desc">深色主题 + 科技感设计</div>
+                </div>
+                <div class="dark-sidebar">
+                    <div class="dark-card profile-section">
+                        <div class="dark-avatar">👨‍💻</div>
+                        <div class="dark-title">金笔头博客</div>
+                        <div class="dark-tagline">Stay hungry, Stay foolish!</div>
+                    </div>
+                    
+                    <div class="dark-card">
+                        <div class="dark-section-title">📁 分类导航</div>
+                        <ul class="nav-list">
+                            <li class="dark-nav-item"><a href="#">人工智能 <span class="count">(15)</span></a></li>
+                            <li class="dark-nav-item"><a href="#">机器学习 <span class="count">(8)</span></a></li>
+                            <li class="dark-nav-item"><a href="#">技术分享 <span class="count">(12)</span></a></li>
+                        </ul>
+                    </div>
+                    
+                    <div class="dark-card">
+                        <div class="dark-section-title">📅 文章归档</div>
+                        <ul class="nav-list">
+                            <li class="dark-nav-item"><a href="#">2025年1月 <span class="count">(5)</span></a></li>
+                            <li class="dark-nav-item"><a href="#">2024年12月 <span class="count">(8)</span></a></li>
+                        </ul>
+                    </div>
+                    
+                    <div class="dark-card">
+                        <div class="dark-section-title">🏷️ 标签云</div>
+                        <div style="display: flex; flex-wrap: wrap; gap: 8px; justify-content: center;">
+                            <span style="background: rgba(233,69,96,0.2); border: 1px solid #e94560; padding: 5px 10px; border-radius: 15px; font-size: 0.8rem; color: #e94560;">AI</span>
+                            <span style="background: rgba(233,69,96,0.2); border: 1px solid #e94560; padding: 5px 10px; border-radius: 15px; font-size: 0.8rem; color: #e94560;">ML</span>
+                            <span style="background: rgba(233,69,96,0.2); border: 1px solid #e94560; padding: 5px 10px; border-radius: 15px; font-size: 0.8rem; color: #e94560;">NLP</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 设计说明 -->
+        <div style="background: white; margin-top: 40px; padding: 30px; border-radius: 15px; box-shadow: 0 10px 30px rgba(0,0,0,0.1);">
+            <h2 style="text-align: center; color: #2c3e50; margin-bottom: 25px;">💡 设计方案特点</h2>
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 20px;">
+                <div style="padding: 20px; background: linear-gradient(135deg, #667eea, #764ba2); color: white; border-radius: 12px;">
+                    <h3 style="margin-bottom: 10px;">🎯 现代卡片式</h3>
+                    <p style="font-size: 0.9rem; line-height: 1.6;">毛玻璃效果，渐变背景，视觉层次分明，适合年轻化的技术博客</p>
+                </div>
+                <div style="padding: 20px; background: #f8f9fa; border-radius: 12px;">
+                    <h3 style="color: #2c3e50; margin-bottom: 10px;">📋 极简设计</h3>
+                    <p style="color: #666; font-size: 0.9rem; line-height: 1.6;">线条简洁，信息密度高，适合专业技术内容，阅读体验佳</p>
+                </div>
+                <div style="padding: 20px; background: #1a1a2e; color: white; border-radius: 12px;">
+                    <h3 style="color: #e94560; margin-bottom: 10px;">🌙 暗色科技风</h3>
+                    <p style="font-size: 0.9rem; line-height: 1.6;">深色主题，护眼设计，科技感强烈，适合程序员群体</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // 添加悬停效果
+        document.querySelectorAll('.modern-nav-item, .minimal-item, .dark-nav-item').forEach(item => {
+            item.addEventListener('mouseenter', function() {
+                this.style.transform = 'translateX(5px)';
+            });
+            item.addEventListener('mouseleave', function() {
+                this.style.transform = '';
+            });
+        });
+    </script>
+</body>
+</html> 

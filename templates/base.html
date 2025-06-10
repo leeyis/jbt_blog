@@ -68,6 +68,23 @@
                 </div>
             </div>
 
+            <!-- 标签云区块 -->
+            <div class="nav-card">
+                <div class="nav-section">
+                    <h3 class="section-title"><i class="fa fa-tags"></i>标签云</h3>
+                    <div class="tag-cloud-container">
+                        <!-- 隐藏的数据元素，供D3.js读取 -->
+                        {% for tag in tag_cloud %}
+                            <div class="tag-data" style="display: none;" 
+                                 data-name="{{ tag.name }}" 
+                                 data-count="{{ tag.usage_count }}" 
+                                 data-url="{% url 'search_tag' tag=tag.name %}">
+                            </div>
+                        {% endfor %}
+                    </div>
+                </div>
+            </div>
+
             <!-- 文章归档区块 -->
             <div class="nav-card">
                 <div class="nav-section">
@@ -83,23 +100,6 @@
                             <li class="archive-item">暂无归档！</li>
                         {% endfor %}
                     </ul>
-                </div>
-            </div>
-
-            <!-- 标签云区块 -->
-            <div class="nav-card">
-                <div class="nav-section">
-                    <h3 class="section-title"><i class="fa fa-tags"></i>标签云</h3>
-                    <div class="tag-cloud-container">
-                        <!-- 隐藏的数据元素，供D3.js读取 -->
-                        {% for tag in tag_cloud %}
-                            <div class="tag-data" style="display: none;" 
-                                 data-name="{{ tag.name }}" 
-                                 data-count="{{ tag.usage_count }}" 
-                                 data-url="{% url 'search_tag' tag=tag.name %}">
-                            </div>
-                        {% endfor %}
-                    </div>
                 </div>
             </div>
         </div>
