@@ -153,10 +153,19 @@ def search_tag(request, tag):
     post_list = _handle_pagination(request, posts)
 
     if request.headers.get('x-requested-with') == 'XMLHttpRequest':
-        html = render_to_string('post_list_partial.html', {'post_list': post_list})
-        if post_list.has_next():
-            html += f'<div id="infinite-scroll-trigger" data-next-page="{post_list.next_page_number}"></div>'
-        return HttpResponse(html)
+        # 检查是否是标签云的请求
+        if request.headers.get('x-tag-cloud-request') == 'true':
+            # 标签云请求：返回完整的tag.html内容
+            context = _get_common_context()
+            context['post_list'] = post_list
+            context['tag'] = tag
+            return render(request, 'tag.html', context)
+        else:
+            # 无限滚动请求：返回部分内容
+            html = render_to_string('post_list_partial.html', {'post_list': post_list})
+            if post_list.has_next():
+                html += f'<div id="infinite-scroll-trigger" data-next-page="{post_list.next_page_number}"></div>'
+            return HttpResponse(html)
 
     context = _get_common_context()
     context['post_list'] = post_list

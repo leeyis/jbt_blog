@@ -1,10 +1,15 @@
-document.addEventListener('DOMContentLoaded', () => {
+function initInfiniteScroll() {
     const postListContainer = document.getElementById('post-list-container');
     const trigger = document.getElementById('infinite-scroll-trigger');
     let isLoading = false;
 
     if (!trigger) {
         return; // 如果没有触发器，说明是最后一页或只有一页
+    }
+    
+    // 如果已经有观察器在运行，先断开
+    if (window.currentInfiniteScrollObserver) {
+        window.currentInfiniteScrollObserver.disconnect();
     }
 
     const observer = new IntersectionObserver((entries) => {
@@ -59,5 +64,10 @@ document.addEventListener('DOMContentLoaded', () => {
         rootMargin: '0px 0px 200px 0px' // 在距离底部200px时开始加载
     });
 
+    // 保存当前观察器的引用
+    window.currentInfiniteScrollObserver = observer;
     observer.observe(trigger);
-}); 
+}
+
+// 初始化
+document.addEventListener('DOMContentLoaded', initInfiniteScroll);

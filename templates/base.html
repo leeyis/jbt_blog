@@ -90,11 +90,14 @@
             <div class="nav-card">
                 <div class="nav-section">
                     <h3 class="section-title"><i class="fa fa-tags"></i>标签云</h3>
-                    <div class="tag-cloud">
+                    <div class="tag-cloud-container">
+                        <!-- 隐藏的数据元素，供D3.js读取 -->
                         {% for tag in tag_cloud %}
-                            <a href="{% url 'search_tag' tag=tag.name %}" class="tag-item" style="font-size: {{ tag.usage_count|add:10 }}px">
-                                {{ tag.name }}
-                            </a>
+                            <div class="tag-data" style="display: none;" 
+                                 data-name="{{ tag.name }}" 
+                                 data-count="{{ tag.usage_count }}" 
+                                 data-url="{% url 'search_tag' tag=tag.name %}">
+                            </div>
                         {% endfor %}
                     </div>
                 </div>
