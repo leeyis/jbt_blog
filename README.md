@@ -87,7 +87,7 @@ python manage.py runserver
 #### 内容管理 Content Management
 - [x] **文章管理** Article Management
   - 新增、编辑、删除文章 Add, edit, delete articles
-  - Markdown 富文本编辑器 Rich Markdown editor
+  - Markdown 文本编辑器 Markdown editor
   - 代码高亮支持 Code highlighting support
 
 - [x] **分类管理** Category Management  
@@ -110,11 +110,9 @@ python manage.py runserver
   - 按分类搜索 Search by category
   - 按标签搜索 Search by tags
   - 文章按月归档 Monthly article archives
-
-- [x] **用户体验** User Experience
-  - 响应式设计 Responsive design
-  - 返回顶部按钮 Back-to-top button
-  - 友好的URL设计 SEO-friendly URLs
+- [x] **动态3D标签云** Dynamic 3D Tag Cloud
+  - 首页交互式标签云展示，根据标签热度动态生成
+  - 鼠标悬停高亮，点击可直接跳转到标签文章列表
 
 #### 后台管理 Admin Management
 - [x] **美化界面** Enhanced Interface
@@ -125,7 +123,8 @@ python manage.py runserver
 - [x] **编辑体验** Editing Experience
   - 所见即所得编辑器 WYSIWYG editor
   - 实时预览功能 Live preview
-  - 图片上传支持 Image upload support
+  - **增强的图片上传** Enhanced Image Upload
+    - 支持粘贴图片直接上传，简化工作流程
 
 ### 🚧 待开发功能 TODO Features
 
@@ -140,14 +139,9 @@ python manage.py runserver
   - 文章评论功能 Article comments
   - 评论审核机制 Comment moderation
   - 评论回复功能 Comment replies
-  - 评论邮件通知 Email notifications
+  - [ ] 评论邮件通知 Email notifications
 
 #### 内容增强 Content Enhancement
-- [ ] **标签云** Tag Cloud
-  - 可视化标签展示 Visual tag display
-  - 标签热度显示 Tag popularity visualization
-  - 交互式标签导航 Interactive tag navigation
-
 - [ ] **文章推荐** Article Recommendation
   - 相关文章推荐 Related article suggestions
   - 热门文章排行 Popular articles ranking
@@ -178,5 +172,5 @@ jbt_blog/
 
 This project is licensed under the MIT License.
 
-**⭐ 如果这个项目对您有帮助，请给个星标支持！**  
+**⭐ 如果这个项目对您有帮助，请给个星标支持！**
 **⭐ If this project helps you, please give it a star!**

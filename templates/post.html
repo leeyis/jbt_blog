@@ -49,7 +49,7 @@
     {% if prev_post or next_post %}
         <nav class="post-navigation">
             <div class="nav-container">
-                {% if prev_post %}
+            {% if prev_post %}
                     <a href="{% url 'detail' id=prev_post.id %}" class="nav-link prev-post">
                         <div class="nav-icon">
                             <i class="fa fa-chevron-left"></i>
@@ -58,12 +58,12 @@
                             <span class="nav-label">上一篇</span>
                             <h4 class="nav-title">{{ prev_post.title }}</h4>
                         </div>
-                    </a>
+                </a>
                 {% else %}
                     <div class="nav-placeholder"></div>
-                {% endif %}
+            {% endif %}
 
-                {% if next_post %}
+            {% if next_post %}
                     <a href="{% url 'detail' id=next_post.id %}" class="nav-link next-post">
                         <div class="nav-content text-right">
                             <span class="nav-label">下一篇</span>
@@ -72,11 +72,11 @@
                         <div class="nav-icon">
                             <i class="fa fa-chevron-right"></i>
                         </div>
-                    </a>
+                </a>
                 {% else %}
                     <div class="nav-placeholder"></div>
-                {% endif %}
-            </div>
+            {% endif %}
+        </div>
         </nav>
     {% endif %}
 
