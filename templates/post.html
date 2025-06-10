@@ -47,20 +47,37 @@
     
     <!-- 上下篇文章切换 -->
     {% if prev_post or next_post %}
-        <div>
-            {% if prev_post %}
-                <a class="footer" href="{% url 'detail' id=prev_post.id %}"
-                   style="text-decoration: none; float: left; padding-left: 1%">
-                    <i class="fa fa-angle-left"></i>&nbsp;&nbsp;上一篇：{{ prev_post.title }}
-                </a>
-            {% endif %}
-            {% if next_post %}
-                <a class="footer" href="{% url 'detail' id=next_post.id %}"
-                   style="text-decoration: none; float: right; padding-right: 1%">
-                    下一篇：{{ next_post.title }}&nbsp;&nbsp;<i class="fa fa-angle-right"></i>
-                </a>
-            {% endif %}
-        </div>
+        <nav class="post-navigation">
+            <div class="nav-container">
+                {% if prev_post %}
+                    <a href="{% url 'detail' id=prev_post.id %}" class="nav-link prev-post">
+                        <div class="nav-icon">
+                            <i class="fa fa-chevron-left"></i>
+                        </div>
+                        <div class="nav-content">
+                            <span class="nav-label">上一篇</span>
+                            <h4 class="nav-title">{{ prev_post.title }}</h4>
+                        </div>
+                    </a>
+                {% else %}
+                    <div class="nav-placeholder"></div>
+                {% endif %}
+
+                {% if next_post %}
+                    <a href="{% url 'detail' id=next_post.id %}" class="nav-link next-post">
+                        <div class="nav-content text-right">
+                            <span class="nav-label">下一篇</span>
+                            <h4 class="nav-title">{{ next_post.title }}</h4>
+                        </div>
+                        <div class="nav-icon">
+                            <i class="fa fa-chevron-right"></i>
+                        </div>
+                    </a>
+                {% else %}
+                    <div class="nav-placeholder"></div>
+                {% endif %}
+            </div>
+        </nav>
     {% endif %}
 
 {% endblock %}
