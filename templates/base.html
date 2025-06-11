@@ -40,14 +40,17 @@
                 
                 <!-- 社交媒体链接 -->
                 <div class="social-links">
-                    <a href="https://github.com/leeyis/" class="social-link" title="Github" target="_blank">
-                        <i class="fa fa-github"></i>
+                    <a href="#" class="social-link" title="微信公众号" id="wechat-modal-trigger">
+                        <span class="custom-icon icon-wechat"></span>
                     </a>
-                    <a href="#" class="social-link" title="微信公众号">
-                        <i class="fa fa-weixin"></i>
+                    <a href="https://github.com/leeyis/jbt_blog" class="social-link" title="Github" target="_blank">
+                        <span class="custom-icon icon-github"></span>
                     </a>
-                    <a href="mailto:jinbitou@126.com" class="social-link" title="邮箱">
-                        <i class="fa fa-envelope-o"></i>
+                    <a href="https://space.bilibili.com/599123958?spm_id_from=333.33.0.0" class="social-link" title="Bilibili" target="_blank">
+                        <span class="custom-icon icon-bilibili"></span>
+                    </a>
+                    <a href="https://www.zhihu.com/people/badguy-95" class="social-link" title="知乎" target="_blank">
+                        <span class="custom-icon icon-zhihu"></span>
                     </a>
                 </div>
             </div>
@@ -116,8 +119,19 @@
 <a href="#" id="back-to-top" title="回到顶部">
     <i class="fa fa-arrow-up"></i>
 </a>
+
+<!-- WeChat Modal Structure -->
+<div id="wechat-modal" class="modal-overlay">
+    <div class="modal-content">
+        <span class="modal-close">&times;</span>
+        <img src="{% static 'image/wechat.png' %}" alt="微信公众号二维码">
+        <p>关注我，不迷路</p>
+    </div>
+</div>
+
 <script src="{% static 'js/copy_code.js' %}"></script>
 <script src="{% static 'js/back_to_top.js' %}"></script>
 <script src="{% static 'js/ajax_navigation.js' %}"></script>
+<script src="{% static 'js/wechat_modal.js' %}"></script>
 </body>
 </html>
