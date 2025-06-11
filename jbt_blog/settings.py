@@ -167,11 +167,11 @@ PAGE_NUM = 5
 
 # DJANGO-ADMIN-INTERFACE 配置
 ADMIN_INTERFACE = {
-    'TITLE': '金笔头博客管理后台',
+    'TITLE': '管理后台',
     'HEADER': '金笔头博客',
     'FAVICON': 'admin/img/favicon.ico',
     'WELCOME_SIGN': '欢迎访问博客管理后台',
-    'COPYRIGHT': 'JBT Blog © 2024',
+    'COPYRIGHT': 'JBT Blog © 2025',
     'SUPPORT_3RD_PARTY_APPS': True,
 }
 
