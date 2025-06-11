@@ -1,2 +1,0 @@
-ckeditor-light-theme
-====================
