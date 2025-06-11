@@ -62,6 +62,7 @@ def tag_cloud_json(request):
 
 def _get_common_context():
     """获取所有页面都需要的通用上下文数据"""
+    archive_data = get_archive_data()  # 先独立获取归档数据
     return {
         'category_list': Category.objects.all(),
         'tag_cloud': Tag.objects.filter(
@@ -70,7 +71,7 @@ def _get_common_context():
         ).annotate(
             usage_count=Count('article')
         ).order_by('-usage_count').distinct()[:20],
-        'months': get_archive_data()
+        'months': archive_data  # 再将其放入上下文字典
     }
 
 def _handle_pagination(request, posts):
@@ -129,14 +130,7 @@ def detail(request, id):
 
 def search_category(request, id):
     posts = Article.objects.filter(category_id=str(id), status='p', pub_time__isnull=False)
-    post_list = _handle_pagination(request, posts)
-
-    if request.headers.get('x-requested-with') == 'XMLHttpRequest':
-        html = render_to_string('post_list_partial.html', {'post_list': post_list})
-        if post_list.has_next():
-            html += f'<div id="infinite-scroll-trigger" data-next-page="{post_list.next_page_number}"></div>'
-        return HttpResponse(html)
-
+    
     context = _get_common_context()
     try:
         category = Category.objects.get(id=str(id))
@@ -144,32 +138,38 @@ def search_category(request, id):
     except Category.DoesNotExist:
         raise Http404("Category not found")
         
+    post_list = _handle_pagination(request, posts)
     context['post_list'] = post_list
+
+    if request.headers.get('x-requested-with') == 'XMLHttpRequest':
+        # 判断是无限滚动请求还是导航请求
+        if request.headers.get('x-infinite-scroll') == 'true':
+            return render(request, 'post_list_partial.html', context)
+        else:
+            return render(request, 'category.html', context)
+
     return render(request, 'category.html', context)
 
 
 def search_tag(request, tag):
     posts = Article.objects.filter(tags__name__contains=tag, status='p', pub_time__isnull=False)
-    post_list = _handle_pagination(request, posts)
-
-    if request.headers.get('x-requested-with') == 'XMLHttpRequest':
-        # 检查是否是标签云的请求
-        if request.headers.get('x-tag-cloud-request') == 'true':
-            # 标签云请求：返回完整的tag.html内容
-            context = _get_common_context()
-            context['post_list'] = post_list
-            context['tag'] = tag
-            return render(request, 'tag.html', context)
-        else:
-            # 无限滚动请求：返回部分内容
-            html = render_to_string('post_list_partial.html', {'post_list': post_list})
-            if post_list.has_next():
-                html += f'<div id="infinite-scroll-trigger" data-next-page="{post_list.next_page_number}"></div>'
-            return HttpResponse(html)
-
+    
     context = _get_common_context()
-    context['post_list'] = post_list
     context['tag'] = tag
+    
+    post_list = _handle_pagination(request, posts)
+    context['post_list'] = post_list
+
+    # For AJAX page loads (main content)
+    if request.headers.get('x-requested-with') == 'XMLHttpRequest':
+        # For AJAX-triggered infinite scroll on the tag page
+        if request.headers.get('x-infinite-scroll') == 'true':
+            return render(request, 'post_list_partial.html', context)
+        # For the initial AJAX load of the tag page
+        else:
+            return render(request, 'tag.html', context)
+    
+    # For non-AJAX, direct page loads
     return render(request, 'tag.html', context)
 
 
@@ -180,18 +180,19 @@ def archives(request, year, month):
         pub_time__year=year,
         pub_time__month=month
     )
-    post_list = _handle_pagination(request, posts)
-
-    if request.headers.get('x-requested-with') == 'XMLHttpRequest':
-        html = render_to_string('post_list_partial.html', {'post_list': post_list})
-        if post_list.has_next():
-            html += f'<div id="infinite-scroll-trigger" data-next-page="{post_list.next_page_number}"></div>'
-        return HttpResponse(html)
-        
+    
     context = _get_common_context()
-    context['post_list'] = post_list
     context['year'] = year
     context['month'] = month
+    post_list = _handle_pagination(request, posts)
+    context['post_list'] = post_list
+
+    if request.headers.get('x-requested-with') == 'XMLHttpRequest':
+        if request.headers.get('x-infinite-scroll') == 'true':
+            return render(request, 'post_list_partial.html', context)
+        else:
+            return render(request, 'archive.html', context)
+        
     return render(request, 'archive.html', context)
 
 

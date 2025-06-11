@@ -1,8 +1,13 @@
-document.addEventListener('DOMContentLoaded', function () {
+function initializeCopyCodeButtons() {
     // 查找所有由Pygments生成的代码块容器
     const highlightBlocks = document.querySelectorAll('.highlight');
 
     highlightBlocks.forEach(function (block) {
+        // 如果按钮已存在，则不重复添加
+        if (block.querySelector('.copy-code-button')) {
+            return;
+        }
+
         // 创建复制按钮
         const copyButton = document.createElement('button');
         copyButton.className = 'copy-code-button';
@@ -89,4 +94,6 @@ document.addEventListener('DOMContentLoaded', function () {
 
         document.body.removeChild(textArea);
     }
-}); 
+}
+
+document.addEventListener('DOMContentLoaded', initializeCopyCodeButtons); 

@@ -15,9 +15,4 @@
         {% include 'post_list_partial.html' %}
     </div>
 
-    {% if post_list.has_next %}
-        <div id="infinite-scroll-trigger" data-next-page="{{ post_list.next_page_number }}">
-            <p style="text-align: center; color: #999;">正在加载更多文章...</p>
-        </div>
-    {% endif %}
 {% endblock %}

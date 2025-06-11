@@ -38,4 +38,10 @@
             </div>
         </section>
     </div>
-{% endfor %} 
+{% endfor %}
+
+{% if post_list.has_next %}
+    <div id="infinite-scroll-trigger" data-next-page="{{ post_list.next_page_number }}">
+        <p style="text-align: center; color: #999; padding: 1rem 0;">正在加载更多文章...</p>
+    </div>
+{% endif %} 

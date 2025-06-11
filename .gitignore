@@ -55,3 +55,19 @@ venv.bak/
 *.swp
 *.swo
 *~
+
+# Media subdirectory
+/media/
+
+# Static files
+/staticfiles/
+
+# Ignore editor uploads
+media/editor/
+
+# Ignore specific files
+tag_cloud_design_preview.html
+task_refactor_sidebar.md
+
+# Log files
+log/*.log
