@@ -373,28 +373,28 @@ h3 {
     }
 
     .sidebar {
-        width: 100%;
+    width: 100%;
         position: static;
-        height: auto;
+    height: auto;
         overflow-y: visible;
         padding: 2rem 1.5rem;
     }
-
+    
     .content {
         width: 100%;
         margin-left: 0;
         padding: 1rem;
     }
-
+    
     .posts {
         padding: 0;
     }
-
+    
     .post-container {
         padding: 1.5rem;
         margin-bottom: 1rem;
     }
-
+    
     .post-title {
         font-size: 1.5rem;
     }
@@ -406,7 +406,7 @@ h3 {
         padding-left: 400px;
         position: relative;
     }
-
+    
     .sidebar {
         position: fixed;
         top: 0;
@@ -430,7 +430,7 @@ h3 {
         max-width: none;
         width: 100%;
     }
-    
+
     .footer {
         margin-left: 400px;
     }
@@ -443,7 +443,7 @@ h3 {
         max-width: 1600px;   /* Max-width for the whole layout */
         margin: 0 auto;      /* Center the layout on very wide screens */
     }
-
+    
     .sidebar {
         width: 400px;
     }
@@ -602,7 +602,7 @@ h3 {
     color: #e0e0e0;
     border: 1px solid rgba(255, 255, 255, 0.2);
     border-radius: 6px;
-    font-size: 0.8rem;
+        font-size: 0.8rem;
     cursor: pointer;
     opacity: 0;
     transition: opacity 0.3s ease;
@@ -660,4 +660,118 @@ h3 {
     transform: translateY(-3px);
     color: #fff;
     text-decoration: none;
+}
+
+/* Style for custom SVG social icons */
+/* Remove the old class for individual SVGs */
+/* .social-svg-icon { ... } */
+
+/* New, flexible system using CSS Masks for full color control */
+.custom-icon {
+    display: inline-block;
+    width: 1.1em; /* Slightly larger to match FA visual weight */
+    height: 1.1em;
+    background-color: currentColor; /* Inherit color from parent link */
+    -webkit-mask-size: contain;
+    mask-size: contain;
+    -webkit-mask-repeat: no-repeat;
+    mask-repeat: no-repeat;
+    -webkit-mask-position: center;
+    mask-position: center;
+    vertical-align: -0.2em; /* Fine-tune alignment */
+}
+
+.icon-wechat {
+    -webkit-mask-image: url(../image/wechat.svg);
+    mask-image: url(../image/wechat.svg);
+}
+
+.icon-github {
+    -webkit-mask-image: url(../image/github.svg);
+    mask-image: url(../image/github.svg);
+}
+
+.icon-bilibili {
+    -webkit-mask-image: url(../image/bilibili.svg);
+    mask-image: url(../image/bilibili.svg);
+}
+
+.icon-zhihu {
+    -webkit-mask-image: url(../image/zhihu.svg);
+    mask-image: url(../image/zhihu.svg);
+}
+
+/* WeChat Modal Styles */
+.modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.6);
+    display: none; /* Initially hidden */
+    align-items: center;
+    justify-content: center;
+    z-index: 1000;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+}
+
+.modal-overlay.active {
+    display: flex;
+    opacity: 1;
+}
+
+.modal-content {
+    background: #fff;
+    padding: 30px 30px 20px 30px;
+    border-radius: 12px;
+    text-align: center;
+    position: relative;
+    max-width: 300px;
+    width: 80%;
+    box-shadow: 0 5px 20px rgba(0,0,0,0.1);
+    transform: scale(0.9);
+    transition: transform 0.3s ease;
+}
+
+.modal-overlay.active .modal-content {
+    transform: scale(1);
+}
+
+.modal-content img {
+    max-width: 100%;
+    height: auto;
+    border-radius: 8px;
+    display: block;
+    margin: 0 auto; /* Ensure perfect centering */
+}
+
+.modal-content p {
+    margin-top: 25px; /* Increased from 15px to move text further down */
+    font-size: 16px;
+    color: #333;
+    font-weight: 500;
+}
+
+.modal-close {
+    position: absolute;
+    top: -10px;
+    right: -10px;
+    width: 30px;
+    height: 30px;
+    background: #fff;
+    border-radius: 50%;
+    color: #555;
+    font-size: 20px;
+    line-height: 30px;
+    text-align: center;
+    cursor: pointer;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+    transition: transform 0.2s ease, color 0.2s ease;
+}
+
+.modal-close:hover {
+    transform: scale(1.1);
+    color: #000;
 }
