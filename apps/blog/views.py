@@ -194,3 +194,10 @@ def archives(request, year, month):
     context['month'] = month
     return render(request, 'archive.html', context)
 
+
+def sidebar_preview(request):
+    """用于展示侧边栏重构效果的预览视图"""
+    context = _get_common_context()
+    # 可以在这里添加任何特定于预览页面的额外上下文
+    return render(request, 'sidebar_modern_preview.html', context)
+
