@@ -38,6 +38,14 @@
             </div>
         </section>
     </div>
+{% empty %}
+    <div class="empty-posts-state">
+        <div class="empty-posts-content">
+            <i class="fa fa-file-text-o"></i>
+            <h3>暂无文章</h3>
+            <p>这里还没有发布任何文章，请稍后再来查看。</p>
+        </div>
+    </div>
 {% endfor %}
 
 {% if post_list.has_next %}

@@ -67,6 +67,11 @@
                                     <span class="category-count">({{ category.article_set.count }})</span>
                                 </a>
                             </li>
+                        {% empty %}
+                            <li class="empty-state">
+                                <i class="fa fa-folder-o"></i>
+                                <p>暂无分类</p>
+                            </li>
                         {% endfor %}
                     </ul>
                 </div>
@@ -77,14 +82,21 @@
                 <div class="nav-section">
                     <h3 class="section-title"><i class="fa fa-tags"></i>标签云</h3>
                     <div class="tag-cloud-container">
-                        <!-- 隐藏的数据元素，供D3.js读取 -->
-                        {% for tag in tag_cloud %}
-                            <div class="tag-data" style="display: none;" 
-                                 data-name="{{ tag.name }}" 
-                                 data-count="{{ tag.usage_count }}" 
-                                 data-url="{% url 'search_tag' tag=tag.name %}">
+                        {% if tag_cloud %}
+                            <!-- 隐藏的数据元素，供D3.js读取 -->
+                            {% for tag in tag_cloud %}
+                                <div class="tag-data" style="display: none;" 
+                                     data-name="{{ tag.name }}" 
+                                     data-count="{{ tag.usage_count }}" 
+                                     data-url="{% url 'search_tag' tag=tag.name %}">
+                                </div>
+                            {% endfor %}
+                        {% else %}
+                            <div class="empty-state">
+                                <i class="fa fa-tag"></i>
+                                <p>暂无标签</p>
                             </div>
-                        {% endfor %}
+                        {% endif %}
                     </div>
                 </div>
             </div>
@@ -101,7 +113,10 @@
                                 </a>
                             </li>
                         {% empty %}
-                            <li class="archive-item">暂无归档！</li>
+                            <li class="empty-state">
+                                <i class="fa fa-calendar-o"></i>
+                                <p>暂无归档</p>
+                            </li>
                         {% endfor %}
                     </ul>
                 </div>
