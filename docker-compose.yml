@@ -1,0 +1,59 @@
+version: '3.8'
+
+services:
+  # PostgreSQL数据库服务
+  db:
+    image: postgres:latest
+    container_name: blog_db
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: blog
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: eason2025
+      POSTGRES_INITDB_ARGS: "--encoding=UTF-8"
+    volumes:
+      - ./postgres:/var/lib/postgresql/data
+    networks:
+      - blog_network
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres -d blog"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  # 博客Web应用服务
+  web:
+    image: blog:v1.0
+    container_name: blog_web
+    restart: unless-stopped
+    ports:
+      - "80:8000"
+    environment:
+      # 数据库配置
+      POSTGRES_DB: blog
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: eason2025
+      POSTGRES_HOST: db
+      POSTGRES_PORT: 5432
+      # Django配置
+      DJANGO_SETTINGS_MODULE: jbt_blog.settings
+    volumes:
+      - ./static_files:/app/staticfiles
+      - ./media_files:/app/media
+    networks:
+      - blog_network
+    depends_on:
+      db:
+        condition: service_healthy
+    command: >
+      sh -c "
+        echo 'Waiting for database to be ready...' &&
+        python manage.py migrate --noinput &&
+        python manage.py collectstatic --noinput &&
+        python manage.py runserver 0.0.0.0:8000
+      "
+
+# 网络定义
+networks:
+  blog_network:
+    driver: bridge 

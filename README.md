@@ -17,6 +17,7 @@ A modern blog system based on **Django 5.2.2** and **Python 3.x**, featuring Mar
 | django-admin-interface | 0.30.0+ | 管理界面美化 / Admin UI Enhancement |
 | Pygments | 2.19.1+ | 代码高亮 / Code Highlighting |
 | Markdown | 3.8+ | 内容渲染 / Content Rendering |
+| PostgreSQL | 15+ | 数据库 / Database |
 
 ## 项目截图 Screenshots
 
@@ -38,13 +39,154 @@ A modern blog system based on **Django 5.2.2** and **Python 3.x**, featuring Mar
 ![文章编辑](screenshot/b2.png)
 *文章编辑页面 - Article Edit*
 
-
 ## 快速开始 Quick Start
 
 ### 环境要求 Requirements
 - Python 3.8+
 - Django 5.2.2+
-- SQLite3 (默认) / MySQL / PostgreSQL
+- PostgreSQL (推荐) / MySQL / SQLite3
+
+### 部署方式选择 Deployment Options
+
+我们提供两种部署方式，您可以根据需求选择：
+
+| 部署方式 | 适用场景 | 优势 |
+|---|---|---|
+| **🐳 Docker部署 (推荐)** | 生产环境、快速部署 | 环境隔离、一键部署、包含数据库 |
+| **📦 传统部署** | 开发环境、自定义配置 | 灵活配置、便于调试 |
+
+---
+
+## 🐳 Docker部署 (推荐)
+
+### 快速启动
+
+1. **构建博客镜像**
+   ```bash
+   git clone https://github.com/leeyis/jbt_blog.git
+   cd jbt_blog
+   docker build -t blog:v1.0 .
+   ```
+
+2. **启动服务**
+   ```bash
+   docker-compose up -d
+   ```
+
+3. **创建管理员账号**
+   ```bash
+   docker-compose exec web python manage.py createsuperuser
+   ```
+
+4. **访问博客**
+   - 前端访问：http://localhost
+   - 后台管理：http://localhost/admin
+
+### 服务说明
+
+#### 服务组件
+- **web**: 博客应用服务 (blog:v1.0)
+- **db**: PostgreSQL数据库服务
+
+#### 端口映射
+- **80**: 博客前端访问端口
+- **5432**: PostgreSQL数据库端口（仅内部网络）
+
+#### 数据持久化
+- PostgreSQL数据目录
+- Django静态文件
+- 用户上传文件
+
+### 常用Docker命令
+
+```bash
+# 启动服务
+docker-compose up -d
+
+# 停止服务
+docker-compose down
+
+# 查看服务状态
+docker-compose ps
+
+# 查看日志
+docker-compose logs web
+docker-compose logs db
+
+# 进入容器
+docker-compose exec web sh
+docker-compose exec db psql -U postgres -d blog
+
+# 数据库迁移
+docker-compose exec web python manage.py migrate
+
+# 收集静态文件
+docker-compose exec web python manage.py collectstatic --noinput
+```
+
+### 配置修改
+
+#### 数据库配置
+编辑 `docker-compose.yml` 中的环境变量：
+```yaml
+environment:
+  POSTGRES_DB: your_db_name
+  POSTGRES_USER: your_username
+  POSTGRES_PASSWORD: your_password
+```
+
+#### 端口修改
+修改 `docker-compose.yml` 中的端口映射：
+```yaml
+ports:
+  - "8080:8000"  # 将80改为8080
+```
+
+### 故障排除
+
+#### 常见问题
+
+1. **端口冲突**
+   - 检查80端口是否被其他服务占用
+   - 修改端口映射到其他端口
+
+2. **数据库连接失败**
+   - 检查数据库服务是否正常启动
+   - 确认环境变量配置正确
+
+3. **权限问题**
+   - 确保Docker有足够权限创建卷和网络
+   - 检查文件权限设置
+
+#### 日志调试
+```bash
+# 查看详细启动日志
+docker-compose up --no-deps web
+
+# 检查数据库健康状态
+docker-compose exec db pg_isready -U postgres -d blog
+```
+
+### 生产环境建议
+
+1. **安全配置**
+   - 修改默认密码
+   - 设置 `DEBUG=False`
+   - 配置 `ALLOWED_HOSTS`
+
+2. **性能优化**
+   - 使用反向代理（Nginx）
+   - 配置Redis缓存
+   - 启用GZIP压缩
+
+3. **备份策略**
+   - 定期备份PostgreSQL数据
+   - 备份用户上传的媒体文件
+   - 使用外部存储卷
+
+---
+
+## 📦 传统部署
 
 ### 开发环境搭建 Dev Environment Setup
 
@@ -162,9 +304,20 @@ jbt_blog/
 ├── templates/ # 模板文件 Templates
 ├── static/ # 静态文件 Static files
 ├── media/ # 媒体文件 Media files
+├── docker-compose.yml # Docker编排文件 Docker Compose
+├── Dockerfile # Docker镜像构建 Docker Image Build
 ├── requirements.txt # 依赖列表 Dependencies
 └── manage.py # 管理脚本 Management script
 ```
+
+## 支持 Support
+
+如遇到问题，请检查：
+1. Docker和Docker Compose版本（Docker部署）
+2. Python和依赖包版本（传统部署）
+3. 系统资源使用情况
+4. 网络连接状态
+5. 服务日志输出
 
 ## 开源协议 License
 
