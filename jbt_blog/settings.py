@@ -39,7 +39,7 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'apps.blog',
-    'mdeditor',  # 替换 summernote
+    'mdeditor',  
 ]
 
 # Markdown编辑器配置
@@ -67,7 +67,7 @@ MDEDITOR_CONFIGS = {
         'flow_chart': True,  # 是否开启流程图功能
         'sequence': True,  # 是否开启序列图功能
         'imageUpload': True,  # 启用图片上传功能
-        'imageDrop': True,  # 启用图片拖拽上传
+        'imageDrop': False,  # 启用图片拖拽上传
         'imagePaste': True,  # 启用图片粘贴上传
     }
 }
@@ -113,8 +113,12 @@ WSGI_APPLICATION = 'jbt_blog.wsgi.application'
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
+        'ENGINE': 'django.db.backends.postgresql',
+        'NAME': os.environ.get('POSTGRES_DB', 'blog'),
+        'USER': os.environ.get('POSTGRES_USER', 'postgres'),
+        'PASSWORD': os.environ.get('POSTGRES_PASSWORD', 'eason2025'),
+        'HOST': os.environ.get('POSTGRES_HOST', '192.168.10.187'),
+        'PORT': os.environ.get('POSTGRES_PORT', '5432'),
     }
 }
 
@@ -175,7 +179,3 @@ ADMIN_INTERFACE = {
     'SUPPORT_3RD_PARTY_APPS': True,
 }
 
-# 管理界面站点设置
-# ADMIN_SITE_HEADER = '金笔头博客管理后台'
-# ADMIN_SITE_TITLE = '金笔头博客'
-# ADMIN_INDEX_TITLE = '欢迎访问金笔头博客管理系统'
