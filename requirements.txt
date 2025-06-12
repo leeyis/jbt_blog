@@ -1,6 +1,9 @@
 # Django核心框架
 Django>=5.2.2
 
+# 数据库适配器
+psycopg2-binary>=2.9.0
+
 # Markdown编辑器和相关依赖
 django-mdeditor>=0.1.20
 

@@ -46,7 +46,7 @@ A modern blog system based on **Django 5.2.2** and **Python 3.x**, featuring Mar
 - Django 5.2.2+
 - SQLite3 (默认) / MySQL / PostgreSQL
 
-### 安装步骤 Installation
+### 开发环境搭建 Dev Environment Setup
 
 ```bash
 # 1. 克隆项目 Clone repository
