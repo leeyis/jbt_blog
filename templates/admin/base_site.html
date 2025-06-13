@@ -1,6 +1,12 @@
 {% extends "admin/base.html" %}
 {% load static %}
 
+{% block title %}{% if subtitle %}{{ subtitle }} | {% endif %}{{ title }} | 金笔头博客管理后台{% endblock %}
+
+{% block branding %}
+<h1 id="site-name"><a href="{% url 'admin:index' %}">金笔头博客管理后台</a></h1>
+{% endblock %}
+
 {% block extrahead %}
     {{ block.super }}
     <!-- MDEditor 增强功能 -->
@@ -47,4 +53,6 @@
             font-size: 14px;
         }
     </style>
-{% endblock %} 
+{% endblock %}
+
+{% block nav-global %}{% endblock %} 

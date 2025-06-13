@@ -1,0 +1,384 @@
+<!DOCTYPE html>
+{% load i18n static %}
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% translate 'Log in' %} | {{ site_title|default:_('Django site admin') }}</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif;
+            background-color: #f0f2f5;
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+        }
+
+        body::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-image: 
+                radial-gradient(circle at 20% 80%, rgba(71, 186, 193, 0.1) 0%, transparent 50%),
+                radial-gradient(circle at 80% 20%, rgba(46, 65, 84, 0.05) 0%, transparent 50%),
+                radial-gradient(circle at 40% 40%, rgba(71, 186, 193, 0.05) 0%, transparent 50%);
+            z-index: 0;
+        }
+
+        .login-wrapper {
+            position: relative;
+            z-index: 1;
+            display: flex;
+            background: #ffffff;
+            border-radius: 24px;
+            overflow: hidden;
+            box-shadow: 0 24px 48px rgba(46, 65, 84, 0.12);
+            max-width: 900px;
+            width: 90%;
+            min-height: 500px;
+        }
+
+        .login-side {
+            background: #2e4154;
+            width: 45%;
+            padding: 60px 50px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .login-side::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            right: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle, rgba(71, 186, 193, 0.1) 0%, transparent 70%);
+            animation: rotate 30s linear infinite;
+        }
+
+        @keyframes rotate {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
+
+        .side-content {
+            position: relative;
+            z-index: 1;
+        }
+
+        .side-content h2 {
+            color: #ffffff;
+            font-size: 36px;
+            font-weight: 700;
+            margin-bottom: 20px;
+            line-height: 1.2;
+        }
+
+        .side-content p {
+            color: rgba(255, 255, 255, 0.8);
+            font-size: 16px;
+            line-height: 1.6;
+            margin-bottom: 30px;
+        }
+
+        .feature-list {
+            list-style: none;
+        }
+
+        .feature-list li {
+            color: rgba(255, 255, 255, 0.9);
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            font-size: 14px;
+        }
+
+        .feature-list li::before {
+            content: '✓';
+            color: #47bac1;
+            font-weight: bold;
+            margin-right: 10px;
+            font-size: 18px;
+        }
+
+        .login-main {
+            flex: 1;
+            padding: 60px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+        
+        .errornote {
+            width: 100%;
+            padding: 14px 16px;
+            margin-bottom: 24px;
+            background-color: #ffebee;
+            color: #c62828;
+            border: 1px solid #ef9a9a;
+            border-radius: 12px;
+            font-size: 14px;
+            font-weight: 500;
+        }
+        
+        .errornote ul {
+            list-style-type: none;
+            padding: 0;
+            margin: 0;
+        }
+
+        .login-header {
+            margin-bottom: 40px;
+        }
+
+        .login-header h1 {
+            color: #2e4154;
+            font-size: 28px;
+            font-weight: 600;
+            margin-bottom: 10px;
+        }
+
+        .login-header p {
+            color: #6b7280;
+            font-size: 16px;
+        }
+
+        .form-group {
+            margin-bottom: 24px;
+        }
+
+        .form-label {
+            display: block;
+            color: #2e4154;
+            font-size: 14px;
+            font-weight: 500;
+            margin-bottom: 8px;
+        }
+
+        .input-group {
+            position: relative;
+        }
+
+        .form-input {
+            width: 100%;
+            padding: 14px 16px;
+            border: 1.5px solid #e5e7eb;
+            border-radius: 12px;
+            font-size: 15px;
+            transition: all 0.2s ease;
+            background-color: #f9fafb;
+        }
+
+        .form-input:hover {
+            border-color: #d1d5db;
+            background-color: #ffffff;
+        }
+
+        .form-input:focus {
+            outline: none;
+            border-color: #47bac1;
+            background-color: #ffffff;
+            box-shadow: 0 0 0 3px rgba(71, 186, 193, 0.1);
+        }
+
+        .form-input::placeholder {
+            color: #9ca3af;
+        }
+        
+        .form-options {
+            display: flex;
+            justify-content: flex-end; /* Only show forgot password link */
+            align-items: center;
+            margin-bottom: 32px;
+        }
+
+        .forgot-link {
+            color: #47bac1;
+            font-size: 14px;
+            text-decoration: none;
+            font-weight: 500;
+            transition: all 0.2s ease;
+        }
+
+        .forgot-link:hover {
+            color: #3a9ca2;
+        }
+
+        .login-btn {
+            width: 100%;
+            padding: 14px;
+            background-color: #47bac1;
+            color: white;
+            border: none;
+            border-radius: 12px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .login-btn:hover {
+            background-color: #3a9ca2;
+            transform: translateY(-1px);
+            box-shadow: 0 6px 20px rgba(71, 186, 193, 0.3);
+        }
+
+        .login-btn:active {
+            transform: translateY(0);
+        }
+
+        @media (max-width: 768px) {
+            body {
+                padding: 20px 0;
+                align-items: flex-start;
+            }
+            .login-wrapper {
+                flex-direction: column;
+                max-width: 400px;
+                min-height: 0;
+            }
+
+            .login-side {
+                display: none;
+            }
+
+            .login-main {
+                padding: 40px 30px;
+            }
+        }
+
+        .loading {
+            display: inline-block;
+            width: 20px;
+            height: 20px;
+            border: 3px solid rgba(255, 255, 255, 0.3);
+            border-radius: 50%;
+            border-top-color: white;
+            animation: spin 0.8s ease-in-out infinite;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        .login-btn.loading-state {
+            pointer-events: none;
+            opacity: 0.8;
+        }
+    </style>
+</head>
+<body>
+    <div class="login-wrapper">
+        <div class="login-side">
+            <div class="side-content">
+                <h2>欢迎回来</h2>
+                <p>管理您的博客内容，与世界分享知识。</p>
+                <ul class="feature-list">
+                    <li>便捷的内容管理系统</li>
+                    <li>安全可靠的后台服务</li>
+                </ul>
+            </div>
+        </div>
+        <div class="login-main">
+            <div class="login-header">
+                <h1>登录您的账户</h1>
+                <p>请输入您的登录信息以继续</p>
+            </div>
+
+            <form action="{{ app_path }}" method="post" id="loginForm">
+                {% csrf_token %}
+
+                {% if form.errors and not form.non_field_errors %}
+                    <div class="errornote">
+                        {% if form.errors.items|length == 1 %}{% translate "Please correct the error below." %}{% else %}{% translate "Please correct the errors below." %}{% endif %}
+                    </div>
+                {% endif %}
+                {% if form.non_field_errors %}
+                    {% for error in form.non_field_errors %}
+                        <div class="errornote">{{ error }}</div>
+                    {% endfor %}
+                {% endif %}
+
+                <div class="form-group">
+                    <label class="form-label" for="id_username">用户名</label>
+                    <div class="input-group">
+                        {{ form.username }}
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label" for="id_password">密码</label>
+                    <div class="input-group">
+                        {{ form.password }}
+                        <input type="hidden" name="next" value="{{ next }}">
+                    </div>
+                </div>
+                
+                {% url 'admin_password_reset' as password_reset_url %}
+                {% if password_reset_url %}
+                <div class="form-options">
+                    <a href="{{ password_reset_url }}" class="forgot-link">{% translate 'Forgotten your password or username?' %}</a>
+                </div>
+                {% endif %}
+
+                <button type="submit" class="login-btn" id="loginBtn">
+                    <span class="btn-text">{% translate 'Log in' %}</span>
+                </button>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // 为Django生成的表单字段添加样式
+            const usernameInput = document.getElementById('id_username');
+            if (usernameInput) {
+                usernameInput.classList.add('form-input');
+                usernameInput.placeholder = '请输入用户名';
+                usernameInput.setAttribute('autofocus', '');
+            }
+
+            const passwordInput = document.getElementById('id_password');
+            if (passwordInput) {
+                passwordInput.classList.add('form-input');
+                passwordInput.placeholder = '请输入密码';
+            }
+
+            // 表单提交处理
+            const loginForm = document.getElementById('loginForm');
+            const loginBtn = document.getElementById('loginBtn');
+            const btnText = loginBtn.querySelector('.btn-text');
+            
+            if(loginForm) {
+                loginForm.addEventListener('submit', function(e) {
+                    loginBtn.classList.add('loading-state');
+                    btnText.style.display = 'none';
+                    const loadingSpinner = document.createElement('span');
+                    loadingSpinner.className = 'loading';
+                    loginBtn.appendChild(loadingSpinner);
+                });
+            }
+        });
+    </script>
+</body>
+</html> 

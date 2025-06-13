@@ -76,7 +76,7 @@ MDEDITOR_CONFIGS = {
 # MDEditor 图片上传配置
 MDEDITOR_UPLOAD_PATH = 'editor/'  # 图片上传路径
 
-X_FRAME_OPTIONS = 'SAMEORIGIN'  # 新增这一行
+# X_FRAME_OPTIONS = 'SAMEORIGIN'  # 移除重复配置
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
@@ -179,4 +179,17 @@ ADMIN_INTERFACE = {
     'COPYRIGHT': 'JBT Blog © 2025',
     'SUPPORT_3RD_PARTY_APPS': True,
 }
+
+# 安全配置
+SECURE_BROWSER_XSS_FILTER = True
+SECURE_CONTENT_TYPE_NOSNIFF = True
+X_FRAME_OPTIONS = 'SAMEORIGIN'
+
+# 隐藏服务器信息
+SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
+
+# Admin 站点自定义设置
+ADMIN_SITE_HEADER = '金笔头博客管理后台'
+ADMIN_SITE_TITLE = '金笔头博客'
+ADMIN_INDEX_TITLE = '欢迎访问后台管理'
 
