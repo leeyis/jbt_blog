@@ -30,6 +30,9 @@ A modern blog system based on **Django 5.2.2** and **Python 3.x**, featuring Mar
 ![文章详情](screenshot/f2.png)
 *文章详情页 - Article Detail Page*
 
+![移动端](screenshot/f3.png)
+*移动端界面 - Mobile Page*
+
 ### 后台管理 Admin Backend
 ![文章管理](screenshot/b1.png)
 *后台文章管理 - Article Management*
