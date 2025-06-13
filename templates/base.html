@@ -28,6 +28,11 @@
     <!--左侧边栏 开始-->
     <div class="sidebar pure-u-1 pure-u-md-1-4">
         <div class="header">
+            <!-- 移动端折叠按钮 -->
+            <button id="sidebar-toggle" class="sidebar-toggle-button" aria-label="Toggle sidebar">
+                <i class="fa fa-bars"></i>
+            </button>
+
             <!-- 头像和基本信息 -->
             <div class="profile-section">
                 <div class="author-avatar">
@@ -55,70 +60,92 @@
                 </div>
             </div>
 
-            <!-- 分类导航区块 -->
-            <div class="nav-card">
-                <div class="nav-section">
-                    <h3 class="section-title"><i class="fa fa-folder-open-o"></i>分类导航</h3>
-                    <ul class="category-list">
-                        {% for category in category_list %}
-                            <li class="category-item">
-                                <a href="{% url 'category_menu' id=category.id %}">
-                                    {{ category.name }}
-                                    <span class="category-count">({{ category.article_set.count }})</span>
-                                </a>
-                            </li>
-                        {% empty %}
-                            <li class="empty-state">
-                                <i class="fa fa-folder-o"></i>
-                                <p>暂无分类</p>
-                            </li>
-                        {% endfor %}
-                    </ul>
-                </div>
-            </div>
-
-            <!-- 标签云区块 -->
-            <div class="nav-card">
-                <div class="nav-section">
-                    <h3 class="section-title"><i class="fa fa-tags"></i>标签云</h3>
-                    <div class="tag-cloud-container">
-                        {% if tag_cloud %}
-                            <!-- 隐藏的数据元素，供D3.js读取 -->
-                            {% for tag in tag_cloud %}
-                                <div class="tag-data" style="display: none;" 
-                                     data-name="{{ tag.name }}" 
-                                     data-count="{{ tag.usage_count }}" 
-                                     data-url="{% url 'search_tag' tag=tag.name %}">
-                                </div>
+            <!-- 可折叠的导航部分 -->
+            <div id="collapsible-nav">
+                <!-- 分类导航区块 -->
+                <div class="nav-card">
+                    <div class="nav-section">
+                        <h3 class="section-title"><i class="fa fa-folder-open-o"></i>文章分类</h3>
+                        <ul class="category-list">
+                            {% for category in category_list %}
+                                <li class="category-item">
+                                    <a href="{% url 'category_menu' id=category.id %}">
+                                        {{ category.name }}
+                                        <span class="category-count">({{ category.article_set.count }})</span>
+                                    </a>
+                                </li>
+                            {% empty %}
+                                <li class="empty-state">
+                                    <i class="fa fa-folder-o"></i>
+                                    <p>暂无分类</p>
+                                </li>
                             {% endfor %}
-                        {% else %}
-                            <div class="empty-state">
-                                <i class="fa fa-tag"></i>
-                                <p>暂无标签</p>
-                            </div>
-                        {% endif %}
+                        </ul>
                     </div>
                 </div>
-            </div>
 
-            <!-- 文章归档区块 -->
-            <div class="nav-card">
-                <div class="nav-section">
-                    <h3 class="section-title"><i class="fa fa-archive"></i>文章归档</h3>
-                    <ul class="archive-list">
-                        {% for m in months %}
-                            <li class="archive-item">
-                                <a href="{% url 'archives' year=m.year month=m.month %}">
-                                    <span class="archive-date">{{ m.date | date:'Y年m月' }}</span><span class="archive-count">({{ m.count }})</span>
-                                </a>
-                            </li>
-                        {% empty %}
-                            <li class="empty-state">
-                                <i class="fa fa-calendar-o"></i>
-                                <p>暂无归档</p>
-                            </li>
-                        {% endfor %}
-                    </ul>
+                <!-- 标签云区块 -->
+                <div class="nav-card">
+                    <div class="nav-section">
+                        <h3 class="section-title"><i class="fa fa-tags"></i>文章标签</h3>
+                        
+                        <!-- PC端：3D标签云 -->
+                        <div class="tag-cloud-container">
+                            {% if tag_cloud %}
+                                <!-- 隐藏的数据元素，供D3.js读取 -->
+                                {% for tag in tag_cloud %}
+                                    <div class="tag-data" style="display: none;" 
+                                         data-name="{{ tag.name }}" 
+                                         data-count="{{ tag.usage_count }}" 
+                                         data-url="{% url 'search_tag' tag=tag.name %}">
+                                    </div>
+                                {% endfor %}
+                            {% else %}
+                                <div class="empty-state">
+                                    <i class="fa fa-tag"></i>
+                                    <p>暂无标签</p>
+                                </div>
+                            {% endif %}
+                        </div>
+
+                        <!-- 移动端：文字标签列表 -->
+                        <ul class="tag-list-mobile">
+                            {% for tag in tag_cloud %}
+                                <li class="tag-item">
+                                    <a href="{% url 'search_tag' tag=tag.name %}">
+                                        {{ tag.name }}
+                                        <span class="tag-count">({{ tag.usage_count }})</span>
+                                    </a>
+                                </li>
+                            {% empty %}
+                                <li class="empty-state">
+                                    <i class="fa fa-tag"></i>
+                                    <p>暂无标签</p>
+                                </li>
+                            {% endfor %}
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- 文章归档区块 -->
+                <div class="nav-card">
+                    <div class="nav-section">
+                        <h3 class="section-title"><i class="fa fa-archive"></i>文章归档</h3>
+                        <ul class="archive-list">
+                            {% for m in months %}
+                                <li class="archive-item">
+                                    <a href="{% url 'archives' year=m.year month=m.month %}">
+                                        <span class="archive-date">{{ m.date | date:'Y年m月' }}</span><span class="archive-count">({{ m.count }})</span>
+                                    </a>
+                                </li>
+                            {% empty %}
+                                <li class="empty-state">
+                                    <i class="fa fa-calendar-o"></i>
+                                    <p>暂无归档</p>
+                                </li>
+                            {% endfor %}
+                        </ul>
+                    </div>
                 </div>
             </div>
         </div>
@@ -148,5 +175,6 @@
 <script src="{% static 'js/back_to_top.js' %}"></script>
 <script src="{% static 'js/ajax_navigation.js' %}"></script>
 <script src="{% static 'js/wechat_modal.js' %}"></script>
+<script src="{% static 'js/mobile_nav.js' %}"></script>
 </body>
 </html>

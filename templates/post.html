@@ -48,7 +48,8 @@
     <!-- 上下篇文章切换 -->
     {% if prev_post or next_post %}
         <nav class="post-navigation">
-            <div class="nav-container">
+            <!-- 桌面端导航 -->
+            <div class="nav-container desktop-nav">
             {% if prev_post %}
                     <a href="{% url 'detail' id=prev_post.id %}" class="nav-link prev-post">
                         <div class="nav-icon">
@@ -76,7 +77,28 @@
                 {% else %}
                     <div class="nav-placeholder"></div>
             {% endif %}
-        </div>
+            </div>
+            
+            <!-- 移动端导航 -->
+            <div class="nav-container mobile-nav">
+                {% if prev_post %}
+                <a href="{% url 'detail' id=prev_post.id %}" class="mobile-nav-link mobile-prev" title="{{ prev_post.title }}">
+                    <div class="mobile-nav-icon">
+                        <i class="fa fa-chevron-left"></i>
+                    </div>
+                    <span class="mobile-nav-text">上一篇</span>
+                </a>
+                {% endif %}
+                
+                {% if next_post %}
+                <a href="{% url 'detail' id=next_post.id %}" class="mobile-nav-link mobile-next" title="{{ next_post.title }}">
+                    <span class="mobile-nav-text">下一篇</span>
+                    <div class="mobile-nav-icon">
+                        <i class="fa fa-chevron-right"></i>
+                    </div>
+                </a>
+                {% endif %}
+            </div>
         </nav>
     {% endif %}
 

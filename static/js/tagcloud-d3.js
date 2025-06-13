@@ -964,6 +964,12 @@ class EllipticalTagCloud {
 
 // 初始化函数
 function initEllipticalTagCloud() {
+    // 移动端检测：如果屏幕宽度小于等于768px，则不初始化3D标签云
+    if (window.innerWidth <= 768) {
+        console.log('移动端设备，跳过3D标签云初始化');
+        return;
+    }
+
     console.log('开始初始化标签云');
     
     const container = document.querySelector('.tag-cloud-container');

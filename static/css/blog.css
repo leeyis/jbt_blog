@@ -85,7 +85,7 @@ h3 {
 
 .author-avatar {
     text-align: center;
-    margin-bottom: 1rem;
+    margin-bottom: 0rem;
 }
 
 .sidebar-avatar {
@@ -378,7 +378,7 @@ h3 {
         position: static;
     height: auto;
         overflow-y: visible;
-        padding: 2rem 1.5rem;
+        padding: 0rem 1.5rem;
     }
     
     .content {
@@ -838,48 +838,61 @@ h3 {
     color: #47BAC1;
 }
 
+/* 移动端导航样式 */
+.mobile-nav {
+    display: none;
+}
+
+.mobile-nav-link {
+    display: flex;
+    align-items: center;
+    padding: 0.5rem;
+    text-decoration: none;
+    color: #666;
+    font-size: 0.85rem;
+    transition: color 0.3s ease;
+    min-height: 44px; /* 保证足够的触摸区域 */
+    min-width: 44px;
+}
+
+.mobile-nav-link:hover {
+    color: #47BAC1;
+    text-decoration: none;
+}
+
+.mobile-nav-icon {
+    margin: 0 0.25rem;
+    font-size: 0.9rem;
+}
+
+.mobile-nav-text {
+    font-weight: 500;
+}
+
+.mobile-prev {
+    justify-content: flex-start;
+}
+
+.mobile-next {
+    justify-content: flex-end;
+}
+
 @media (max-width: 768px) {
-    .post-navigation {
-        margin-top: 2rem;
-    }
-    .nav-container {
-        flex-direction: column;
-        gap: 1rem;
-    }
-    .nav-link {
-        padding: 0;
-    }
-    .nav-placeholder {
+    .desktop-nav {
         display: none;
     }
-    .next-post .nav-content {
-        margin-right: 0;
-        margin-left: 0;
-        order: 0;
+    
+    .mobile-nav {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 0 0.5rem;
     }
-    .nav-icon {
-        width: 40px;
-    }
-    .nav-icon i {
-        font-size: 1.2rem;
-    }
-    .nav-title {
-        font-size: 0.9rem;
-    }
-}
-@media (max-width: 480px) {
-    .nav-link {
-        flex-direction: column;
-        align-items: flex-start;
-    }
-    .nav-icon {
-        margin-bottom: 0.75rem;
-    }
-    .nav-title {
-        font-size: 0.85rem;
-    }
-    .nav-label {
-        font-size: 0.7rem;
+    
+    .post-navigation {
+        margin-top: 0rem;
+        border-top: 1px solid #eee;
+        padding-top: 1.5rem;
     }
 }
 .text-right {
@@ -1169,4 +1182,199 @@ h3 {
     margin: 0;
     font-size: 1em;
     line-height: 1.5;
+}
+
+/* Responsive Mobile Navigation Styles */
+/* -------------------------------------------------- */
+
+/* 默认隐藏移动端按钮 */
+.sidebar-toggle-button {
+    display: none;
+}
+
+/* 移动端标签列表样式（默认隐藏） */
+.tag-list-mobile {
+    display: none;
+    list-style: none;
+    padding: 0;
+    max-height: 12.5rem;
+    overflow-y: auto;
+}
+
+.tag-list-mobile::-webkit-scrollbar {
+    width: 4px;
+}
+
+.tag-list-mobile::-webkit-scrollbar-track {
+    background: rgba(255, 255, 255, 0.05);
+}
+
+.tag-list-mobile::-webkit-scrollbar-thumb {
+    background: #47BAC1;
+    border-radius: 2px;
+}
+
+.tag-item a {
+    color: rgb(176, 202, 219);
+    text-decoration: none;
+    transition: color 0.3s ease, background-color 0.3s ease;
+    font-size: 0.9rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0.6rem 0.75rem;
+    border-radius: 6px;
+}
+
+.tag-item a:hover {
+    color: #fff;
+    text-decoration: none;
+    background-color: rgba(71, 186, 193, 0.1);
+}
+
+.tag-count {
+    color: #7a8c9e;
+    font-size: 0.85rem;
+    background-color: rgba(71, 186, 193, 0.2);
+    padding: 2px 8px;
+    border-radius: 10px;
+}
+
+/* 当屏幕宽度小于等于768px时应用以下样式 */
+@media (max-width: 768px) {
+    .sidebar {
+        /* 为按钮定位提供参考 */
+        position: relative; 
+        /* 在移动端，侧边栏底部不需要那么大的边距 */
+        margin-bottom: 2px;
+        padding-bottom: 0px;
+    }
+
+    .sidebar .header {
+        /* 确保内边距在所有状态下一致 */
+        padding: 0em;
+    }
+
+    /* 显示并设置按钮样式 */
+    .sidebar-toggle-button {
+        display: block;
+        position: absolute;
+        top: 25px;
+        left: 25px;
+        background-color: rgba(255, 255, 255, 0.1);
+        border: 0px solid rgba(255, 255, 255, 0.2);
+        color: #47bac1;
+        width: 40px;
+        height: 40px;
+        border-radius: 5%;
+        font-size: 20px;
+        line-height: 38px;
+        text-align: center;
+        cursor: pointer;
+        z-index: 10;
+        transition: all 0.3s ease;
+    }
+
+    .sidebar-toggle-button:hover {
+        background-color: rgba(255, 255, 255, 0.2);
+    }
+    
+    /* 可折叠内容的容器 */
+    #collapsible-nav {
+        /* 使用max-height实现平滑的展开/折叠动画 */
+        max-height: 0;
+        overflow: hidden;
+        transition: max-height 0.5s ease-in-out;
+    }
+
+    /* 当侧边栏展开时，显示内容 */
+    .sidebar.is-open #collapsible-nav {
+        /* 设置一个足够大的值确保内容能完全显示 */
+        max-height: 1500px; 
+    }
+
+    /* 展开时，给下方内容增加一点上边距，使其看起来更自然 */
+    .sidebar.is-open .profile-section {
+        padding-bottom: 2em;
+    }
+
+    /* 
+     * 新增：移动端顶部个人信息区域紧凑化和左对齐
+     */
+    .profile-section {
+        /* 为左上角的按钮留出空间 */
+        padding-top: 0px; 
+        /* 在移动端改为左对齐 */
+        text-align: center;
+    }
+
+    .author-avatar,
+    .social-links {
+        /* 在移动端改为居中对齐 */
+        justify-content: center;
+    }
+
+    /* 大幅减少各元素间距 */
+    .sidebar-avatar {
+        margin-bottom: 0.5rem;
+    }
+    .brand-title {
+        margin-bottom: 0.25rem;
+    }
+    .brand-tagline {
+        margin-bottom: 1rem;
+    }
+    
+    /* 
+     * 新增：移动端紧凑布局优化 
+     */
+
+    /* 移除社交图标下的分割线 */
+    .social-links {
+        border-bottom: none;
+        padding-bottom: 0; /* 移除因边框占用的空间 */
+        margin-bottom: 0; /* 移除外边距，让其与下方内容更紧凑 */
+    }
+    
+    .sidebar.is-open .social-links {
+        /* 在展开时，为社交图标和下方导航区块之间保留一点间距 */
+        padding-bottom: 2rem;
+    }
+
+    /* 移除可折叠区域内每个区块标题的分割线 */
+    #collapsible-nav .section-title {
+        border-bottom: none;
+        padding-bottom: 0.5rem; /* 稍微减少标题下方的内边距 */
+        margin-bottom: 1rem; /* 稍微减少标题和列表之间的距离 */
+    }
+
+    /* 移除可折叠区域内区块之间的外边距 */
+    #collapsible-nav .nav-section {
+        margin-bottom: 1rem; /* 将原来的2rem减少为1rem */
+    }
+
+    /* 移除最后一个区块的下外边距，使其完全紧凑 */
+    #collapsible-nav .nav-section:last-child {
+        margin-bottom: 0;
+    }
+
+    /* 移动端标签显示控制 */
+    .tag-cloud-container {
+        display: none; /* 隐藏3D标签云 */
+    }
+
+    .tag-list-mobile {
+        display: block; /* 显示文字标签列表 */
+    }
+}
+
+/* PC端（桌面）样式 */
+@media (min-width: 769px) {
+    .tag-cloud-container {
+        display: block; /* 显示3D标签云 */
+    }
+
+    .tag-list-mobile {
+        display: none; /* 隐藏文字标签列表 */
+    }
 }
