@@ -69,6 +69,7 @@ MDEDITOR_CONFIGS = {
         'imageUpload': True,  # 启用图片上传功能
         'imageDrop': False,  # 启用图片拖拽上传
         'imagePaste': True,  # 启用图片粘贴上传
+        'watch': False,  # 关闭实时预览
     }
 }
 

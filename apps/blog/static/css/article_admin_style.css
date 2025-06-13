@@ -1,0 +1,39 @@
+/* apps/blog/static/css/article_admin_style.css */
+
+/* 使标题字段与Mdeditor宽度一致 */
+.form-row.field-title {
+    width: 80%; /* 根据mdeditor的默认宽度设定 */
+}
+
+#id_title {
+    width: 100% !important;
+}
+
+/* 标签胶囊化样式 */
+.tags-capsule-container {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    background-color: #f9f9f9;
+}
+
+.tag-capsule {
+    display: inline-block;
+    padding: 5px 12px;
+    background-color: #e0e0e0;
+    color: #333;
+    border-radius: 15px;
+    cursor: pointer;
+    transition: all 0.2s ease-in-out;
+    user-select: none; /* 防止双击选中文本 */
+}
+
+.tag-capsule.selected {
+    background-color: var(--primary); /* 选中时的颜色，跟随后台主题色 */
+    color: var(--button-fg, white); /* 选中时的文字颜色，跟随后台主题 */
+    font-weight: bold;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+} 

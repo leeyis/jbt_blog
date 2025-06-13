@@ -1,0 +1,13 @@
+/* apps/blog/static/css/popup_fix.css */
+
+/*
+  修复Django admin弹窗底部空白过多的问题。
+  弹窗的body有 'popup' 类，可以用来限定作用域。
+*/
+body.popup .content {
+    padding-bottom: 20px;
+}
+
+body.popup #container {
+    min-height: auto;
+} 

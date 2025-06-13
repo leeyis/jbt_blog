@@ -1,8 +1,8 @@
 # Django核心框架
 Django>=5.2.2
 
-# 数据库适配器（Alpine Linux需要使用源码编译版本）
-psycopg2>=2.9.0
+# 数据库适配器（使用预编译二进制版本，适用于大多数开发环境）
+psycopg2-binary>=2.9.0
 
 # Markdown编辑器和相关依赖
 django-mdeditor>=0.1.20

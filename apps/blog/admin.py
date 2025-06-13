@@ -4,8 +4,19 @@ from django.conf import settings
 from django import forms
 from mdeditor.widgets import MDEditorWidget
 
-admin.site.register(Category)
-admin.site.register(Tag)
+@admin.register(Category)
+class CategoryAdmin(admin.ModelAdmin):
+    class Media:
+        css = {
+            'all': ('css/popup_fix.css',)
+        }
+
+@admin.register(Tag)
+class TagAdmin(admin.ModelAdmin):
+    class Media:
+        css = {
+            'all': ('css/popup_fix.css',)
+        }
 
 
 class ArticleAdminForm(forms.ModelForm):
@@ -36,9 +47,9 @@ class ArticleAdmin(admin.ModelAdmin):
     )
     
     class Media:
-        js = ('js/mdeditor-enhance.js',)
+        js = ('js/mdeditor-enhance.js', 'js/article_admin_setup.js',)
         css = {
-            'all': ('css/mdeditor-enhance.css',)
+            'all': ('css/mdeditor-enhance.css', 'css/article_admin_style.css',)
         }
 
 # 自定义管理界面设置
