@@ -30,10 +30,17 @@ A modern blog system based on **Django 5.2.2** and **Python 3.x**, featuring Mar
 ![文章详情](screenshot/f2.png)
 *文章详情页 - Article Detail Page*
 
+---
+
 ![移动端](screenshot/f3.png)
 *移动端界面 - Mobile Page*
 
 ### 后台管理 Admin Backend
+![登录界面](screenshot/b3.png)
+*后台登录界面 - Login Page*
+
+---
+
 ![文章管理](screenshot/b1.png)
 *后台文章管理 - Article Management*
 
@@ -41,6 +48,7 @@ A modern blog system based on **Django 5.2.2** and **Python 3.x**, featuring Mar
 
 ![文章编辑](screenshot/b2.png)
 *文章编辑页面 - Article Edit*
+
 
 ## 快速开始 Quick Start
 
@@ -83,7 +91,7 @@ A modern blog system based on **Django 5.2.2** and **Python 3.x**, featuring Mar
 
 4. **访问博客**
    - 前端访问：http://localhost
-   - 后台管理：http://localhost/admin
+   - 后台管理：http://localhost/manage
 
 ### 服务说明
 
@@ -223,7 +231,7 @@ python manage.py runserver
 ### 访问地址 Access URLs
 
 - **前台首页 Frontend**: http://127.0.0.1:8000
-- **后台管理 Admin**: http://127.0.0.1:8000/admin
+- **后台管理 Admin**: http://127.0.0.1:8000/manage
 
 ## 功能特性 Features
 
