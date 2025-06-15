@@ -22,7 +22,7 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 SECRET_KEY = '1ek)3z+-*)(&1c&3fv=2*=lr_cyst85w&a4y#5!2m*ik@=&!p0'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = False
 
 ALLOWED_HOSTS = ['*']
 
@@ -79,6 +79,7 @@ MDEDITOR_UPLOAD_PATH = 'editor/'  # 图片上传路径
 # X_FRAME_OPTIONS = 'SAMEORIGIN'  # 移除重复配置
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
+    'whitenoise.middleware.WhiteNoiseMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
@@ -108,6 +109,7 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'jbt_blog.wsgi.application'
 
+DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 # Database
 # https://docs.djangoproject.com/en/2.0/ref/settings/#databases
@@ -163,6 +165,7 @@ STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')  # 新增这行
 STATICFILES_DIRS = [
         os.path.join(BASE_DIR, 'static'),
     ]
+STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
 
 MEDIA_URL = '/media/'
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media/')

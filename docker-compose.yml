@@ -4,7 +4,7 @@ services:
   # PostgreSQL数据库服务
   db:
     image: postgres:latest
-    container_name: blog_db
+    container_name: db
     restart: unless-stopped
     environment:
       POSTGRES_DB: blog
@@ -12,7 +12,7 @@ services:
       POSTGRES_PASSWORD: eason2025
       POSTGRES_INITDB_ARGS: "--encoding=UTF-8"
     volumes:
-      - ./postgres:/var/lib/postgresql/data
+      - /home/eason/docker-compose-ymls/postgres:/var/lib/postgresql/data
     networks:
       - blog_network
     healthcheck:
@@ -24,10 +24,10 @@ services:
   # 博客Web应用服务
   web:
     image: blog:v1.0
-    container_name: blog_web
+    container_name: web
     restart: unless-stopped
     ports:
-      - "80:8000"
+      - "8000:8000"
     environment:
       # 数据库配置
       POSTGRES_DB: blog
@@ -38,20 +38,13 @@ services:
       # Django配置
       DJANGO_SETTINGS_MODULE: jbt_blog.settings
     volumes:
-      - ./static_files:/app/staticfiles
-      - ./media_files:/app/media
+      - /home/eason/docker-compose-ymls/blogmedia:/app/media
     networks:
-      - blog_network
+      - blog_network 
     depends_on:
       db:
         condition: service_healthy
-    command: >
-      sh -c "
-        echo 'Waiting for database to be ready...' &&
-        python manage.py migrate --noinput &&
-        python manage.py collectstatic --noinput &&
-        python manage.py runserver 0.0.0.0:8000
-      "
+    command: sh -c "python manage.py migrate --noinput && gunicorn jbt_blog.wsgi --bind 0.0.0.0:8000"
 
 # 网络定义
 networks:

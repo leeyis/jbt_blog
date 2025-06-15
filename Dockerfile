@@ -43,11 +43,8 @@ RUN mkdir -p staticfiles
 # 收集静态文件
 RUN python manage.py collectstatic --noinput
 
-# 执行数据库迁移
-RUN python manage.py migrate
-
 # 暴露端口
 EXPOSE 8000
 
 # 设置启动命令
-CMD ["python", "manage.py", "runserver", "0.0.0.0:8000"]
+CMD ["gunicorn", "--bind", "0.0.0.0:8000", "jbt_blog.wsgi"]

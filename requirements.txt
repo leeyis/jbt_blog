@@ -18,6 +18,10 @@ Pygments>=2.19.1
 # 可选依赖（仅在需要数据迁移时使用）
 # html2text>=2025.4.15
 
+# 生产环境服务器
+gunicorn>=22.0.0
+whitenoise[brotli]>=6.7.0
+
 # Django核心依赖（通常自动安装，但明确列出确保兼容性）
 asgiref>=3.8.1
 sqlparse>=0.5.3
