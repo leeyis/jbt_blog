@@ -90,8 +90,8 @@ A modern blog system based on **Django 5.2.2** and **Python 3.x**, featuring Mar
    ```
 
 4. **访问博客**
-   - 前端访问：http://localhost
-   - 后台管理：http://localhost/manage
+   - 前端访问：http://127.0.0.1:8000
+   - 后台管理：http://127.0.0.1:8000/manage
 
 ### 服务说明
 
