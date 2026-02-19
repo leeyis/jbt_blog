@@ -43,6 +43,131 @@
                 </div>
             </section>
         </article>
+
+        <section id="comments" class="post-container comments-panel">
+            <header class="comments-header">
+                <h2 class="comments-title">
+                    <i class="fa fa-comments-o" aria-hidden="true"></i>
+                    评论区
+                    <span class="comments-count">{{ approved_comments|length }}</span>
+                </h2>
+                <p class="comments-subtitle">欢迎讨论技术细节与实现思路，评论提交后需审核展示。</p>
+            </header>
+
+            {% if messages %}
+                <div class="comment-message-group" role="status" aria-live="polite">
+                    {% for message in messages %}
+                        <div class="comment-message message-{{ message.tags }}">
+                            {{ message }}
+                        </div>
+                    {% endfor %}
+                </div>
+            {% endif %}
+
+            <form method="post" action="{% url 'comment_create' id=post.id %}" class="comment-form">
+                {% csrf_token %}
+                <div class="comment-form-grid">
+                    <div class="comment-field">
+                        <label for="id_author_name">昵称</label>
+                        <input id="id_author_name" name="author_name" type="text" maxlength="64" required placeholder="请输入你的昵称">
+                    </div>
+                    <div class="comment-field">
+                        <label for="id_author_email">邮箱</label>
+                        <input id="id_author_email" name="author_email" type="email" required placeholder="用于回复通知，不会公开">
+                    </div>
+                    <div class="comment-field comment-field-wide">
+                        <label for="id_author_website">个人网站（可选）</label>
+                        <input id="id_author_website" name="author_website" type="url" placeholder="https://your-site.com">
+                    </div>
+                    <div class="comment-field comment-field-wide">
+                        <label for="id_content">评论内容</label>
+                        <textarea id="id_content" name="content" rows="5" required placeholder="欢迎提出问题、建议或补充实践经验"></textarea>
+                    </div>
+                    <div class="comment-field">
+                        <label for="id_captcha_answer">验证码：{{ captcha_question }}</label>
+                        <input id="id_captcha_answer" name="captcha_answer" type="text" required placeholder="请输入计算结果">
+                    </div>
+                </div>
+                <div class="comment-form-actions">
+                    <button type="submit" class="comment-submit-btn">
+                        <i class="fa fa-paper-plane-o" aria-hidden="true"></i>
+                        提交评论
+                    </button>
+                </div>
+            </form>
+
+            <div class="comment-list">
+                {% for comment in approved_comments %}
+                    <article class="comment-card" id="comment-{{ comment.id }}">
+                        <div class="comment-main">
+                            <div class="comment-author-row">
+                                <span class="comment-author">{{ comment.author_name }}</span>
+                                <span class="comment-time">{{ comment.created_time|date:'Y-m-d H:i' }}</span>
+                            </div>
+                            <div class="comment-content">{{ comment.content|linebreaksbr }}</div>
+                            <div class="comment-actions">
+                                <button type="button" class="comment-reply-toggle" data-target="reply-form-{{ comment.id }}">
+                                    回复
+                                </button>
+                                {% if comment.author_website %}
+                                    <a href="{{ comment.author_website }}" target="_blank" rel="nofollow noopener noreferrer" class="comment-website-link">个人站点</a>
+                                {% endif %}
+                            </div>
+                        </div>
+
+                        <form method="post" action="{% url 'comment_reply' id=post.id comment_id=comment.id %}" id="reply-form-{{ comment.id }}" class="comment-reply-form is-hidden">
+                            {% csrf_token %}
+                            <div class="comment-form-grid">
+                                <div class="comment-field">
+                                    <label for="reply_author_name_{{ comment.id }}">昵称</label>
+                                    <input id="reply_author_name_{{ comment.id }}" name="author_name" type="text" maxlength="64" required>
+                                </div>
+                                <div class="comment-field">
+                                    <label for="reply_author_email_{{ comment.id }}">邮箱</label>
+                                    <input id="reply_author_email_{{ comment.id }}" name="author_email" type="email" required>
+                                </div>
+                                <div class="comment-field comment-field-wide">
+                                    <label for="reply_author_website_{{ comment.id }}">个人网站（可选）</label>
+                                    <input id="reply_author_website_{{ comment.id }}" name="author_website" type="url">
+                                </div>
+                                <div class="comment-field comment-field-wide">
+                                    <label for="reply_content_{{ comment.id }}">回复内容</label>
+                                    <textarea id="reply_content_{{ comment.id }}" name="content" rows="4" required></textarea>
+                                </div>
+                                <div class="comment-field">
+                                    <label for="reply_captcha_{{ comment.id }}">验证码：{{ captcha_question }}</label>
+                                    <input id="reply_captcha_{{ comment.id }}" name="captcha_answer" type="text" required>
+                                </div>
+                            </div>
+                            <div class="comment-form-actions">
+                                <button type="submit" class="comment-submit-btn comment-submit-reply-btn">提交回复</button>
+                                <button type="button" class="comment-reply-cancel">取消</button>
+                            </div>
+                        </form>
+
+                        {% if comment.approved_replies %}
+                            <div class="comment-replies">
+                                {% for reply in comment.approved_replies %}
+                                    <div class="comment-reply-item" id="comment-{{ reply.id }}">
+                                        <div class="comment-author-row">
+                                            <span class="comment-author">{{ reply.author_name }}</span>
+                                            <span class="comment-time">{{ reply.created_time|date:'Y-m-d H:i' }}</span>
+                                        </div>
+                                        <div class="comment-content">{{ reply.content|linebreaksbr }}</div>
+                                    </div>
+                                {% endfor %}
+                            </div>
+                        {% endif %}
+                    </article>
+                {% empty %}
+                    <div class="empty-comments-state">
+                        <i class="fa fa-commenting-o" aria-hidden="true"></i>
+                        <h3>还没有评论</h3>
+                        <p>成为第一个留言的人，分享你的观点或问题。</p>
+                    </div>
+                {% endfor %}
+            </div>
+        </section>
     </div><!-- /.blog-post -->
     
     <!-- 上下篇文章切换 -->

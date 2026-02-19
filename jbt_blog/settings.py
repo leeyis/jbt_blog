@@ -196,3 +196,25 @@ ADMIN_SITE_HEADER = '金笔头博客管理后台'
 ADMIN_SITE_TITLE = '金笔头博客'
 ADMIN_INDEX_TITLE = '欢迎访问后台管理'
 
+# 评论系统配置
+COMMENT_RATE_LIMIT_WINDOW_SECONDS = int(os.environ.get('COMMENT_RATE_LIMIT_WINDOW_SECONDS', '300'))
+COMMENT_RATE_LIMIT_MAX_ATTEMPTS = int(os.environ.get('COMMENT_RATE_LIMIT_MAX_ATTEMPTS', '3'))
+COMMENT_MIN_LENGTH = int(os.environ.get('COMMENT_MIN_LENGTH', '2'))
+COMMENT_MAX_LENGTH = int(os.environ.get('COMMENT_MAX_LENGTH', '1000'))
+COMMENT_CAPTCHA_TTL_SECONDS = int(os.environ.get('COMMENT_CAPTCHA_TTL_SECONDS', '600'))
+COMMENT_BANNED_WORDS = [word.strip() for word in os.environ.get('COMMENT_BANNED_WORDS', 'spam,广告,博彩').split(',') if word.strip()]
+COMMENT_ADMIN_EMAIL = os.environ.get('COMMENT_ADMIN_EMAIL', '')
+COMMENT_NOTIFICATION_MAX_RETRIES = int(os.environ.get('COMMENT_NOTIFICATION_MAX_RETRIES', '3'))
+
+# 邮件发送配置
+EMAIL_BACKEND = os.environ.get('EMAIL_BACKEND', 'django.core.mail.backends.smtp.EmailBackend')
+EMAIL_HOST = os.environ.get('EMAIL_HOST', '')
+EMAIL_PORT = int(os.environ.get('EMAIL_PORT', '25'))
+EMAIL_HOST_USER = os.environ.get('EMAIL_HOST_USER', '')
+EMAIL_HOST_PASSWORD = os.environ.get('EMAIL_HOST_PASSWORD', '')
+EMAIL_USE_TLS = os.environ.get('EMAIL_USE_TLS', 'false').lower() in ('1', 'true', 'yes')
+EMAIL_USE_SSL = os.environ.get('EMAIL_USE_SSL', 'false').lower() in ('1', 'true', 'yes')
+DEFAULT_FROM_EMAIL = os.environ.get('DEFAULT_FROM_EMAIL', 'noreply@jbtblog.local')
+
+# 站点地址（用于邮件中的详情链接）
+SITE_BASE_URL = os.environ.get('SITE_BASE_URL', '')

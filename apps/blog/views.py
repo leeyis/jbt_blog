@@ -1,11 +1,25 @@
-from django.shortcuts import render
-from apps.blog.models import Article, Category, Tag
-from django.core.paginator import Paginator, PageNotAnInteger, EmptyPage
-from django.http import Http404, JsonResponse, HttpResponse
+import hashlib
+import random
+import time
+from datetime import timedelta
+
 from django.conf import settings
-from django.db.models import Count
+from django.contrib import messages
+from django.core.exceptions import ValidationError
+from django.core.paginator import EmptyPage, PageNotAnInteger, Paginator
+from django.db.models import Count, Prefetch, Q
+from django.http import Http404, HttpResponse, JsonResponse
+from django.shortcuts import get_object_or_404, redirect, render
 from django.template.loader import render_to_string
-import json
+from django.urls import reverse
+from django.utils.timezone import now
+from django.views.decorators.http import require_POST
+
+from apps.blog.forms import CommentForm
+from apps.blog.models import Article, Category, Comment, CommentNotification, Tag
+
+
+CAPTCHA_SESSION_KEY = 'comment_captcha'
 
 def get_archive_data():
     """获取归档数据，包含每月文章数量"""
@@ -27,6 +41,123 @@ def get_archive_data():
         }
         archive_data.append(archive_item)
     return archive_data
+
+
+def _build_comment_captcha():
+    left = random.randint(1, 9)
+    right = random.randint(1, 9)
+    if random.choice([True, False]):
+        question = f'{left} + {right} = ?'
+        answer = left + right
+    else:
+        larger, smaller = max(left, right), min(left, right)
+        question = f'{larger} - {smaller} = ?'
+        answer = larger - smaller
+    return question, str(answer)
+
+
+def _ensure_comment_captcha(request, force_refresh=False):
+    ttl = int(getattr(settings, 'COMMENT_CAPTCHA_TTL_SECONDS', 600))
+    now_ts = int(time.time())
+    captcha_data = request.session.get(CAPTCHA_SESSION_KEY)
+
+    is_expired = (
+        not captcha_data
+        or captcha_data.get('created_at', 0) + ttl < now_ts
+    )
+    if force_refresh or is_expired:
+        question, answer = _build_comment_captcha()
+        captcha_data = {
+            'question': question,
+            'answer': answer,
+            'created_at': now_ts,
+        }
+        request.session[CAPTCHA_SESSION_KEY] = captcha_data
+        request.session.modified = True
+    return captcha_data
+
+
+def _validate_comment_captcha(request, provided_answer):
+    captcha_data = _ensure_comment_captcha(request)
+    normalized_answer = (provided_answer or '').strip()
+    if normalized_answer != str(captcha_data.get('answer', '')).strip():
+        return False
+    _ensure_comment_captcha(request, force_refresh=True)
+    return True
+
+
+def _get_client_ip(request):
+    x_forwarded_for = request.META.get('HTTP_X_FORWARDED_FOR')
+    if x_forwarded_for:
+        return x_forwarded_for.split(',')[0].strip()
+    return request.META.get('REMOTE_ADDR', '')
+
+
+def _hash_ip(raw_ip):
+    if not raw_ip:
+        return ''
+    payload = f"{settings.SECRET_KEY}:{raw_ip}"
+    return hashlib.sha256(payload.encode('utf-8')).hexdigest()
+
+
+def _is_comment_rate_limited(author_email, ip_hash):
+    window_seconds = int(getattr(settings, 'COMMENT_RATE_LIMIT_WINDOW_SECONDS', 300))
+    max_attempts = int(getattr(settings, 'COMMENT_RATE_LIMIT_MAX_ATTEMPTS', 3))
+    start_time = now() - timedelta(seconds=window_seconds)
+
+    if not author_email and not ip_hash:
+        return False
+
+    recent_comments = Comment.objects.filter(created_time__gte=start_time)
+    limiter_filter = Q()
+    if author_email:
+        limiter_filter |= Q(author_email__iexact=author_email)
+    if ip_hash:
+        limiter_filter |= Q(ip_hash=ip_hash)
+    return recent_comments.filter(limiter_filter).count() >= max_attempts
+
+
+def _comment_redirect_url(article_id):
+    return f"{reverse('detail', kwargs={'id': article_id})}#comments"
+
+
+def _submit_comment(request, article, parent_comment=None):
+    redirect_url = _comment_redirect_url(article.id)
+    form = CommentForm(request.POST)
+    captcha_answer = request.POST.get('captcha_answer', '')
+
+    if not _validate_comment_captcha(request, captcha_answer):
+        messages.error(request, '验证码错误，请重新输入后再提交。')
+        return redirect(redirect_url)
+
+    author_email = (request.POST.get('author_email') or '').strip().lower()
+    client_ip_hash = _hash_ip(_get_client_ip(request))
+    if _is_comment_rate_limited(author_email, client_ip_hash):
+        messages.error(request, '评论过于频繁，请稍后再试。')
+        return redirect(redirect_url)
+
+    if not form.is_valid():
+        for field_errors in form.errors.values():
+            if field_errors:
+                messages.error(request, field_errors[0])
+        return redirect(redirect_url)
+
+    comment = form.save(commit=False)
+    comment.article = article
+    comment.parent = parent_comment
+    comment.ip_hash = client_ip_hash
+    comment.status = Comment.STATUS_PENDING
+    try:
+        comment.full_clean()
+    except ValidationError as exc:
+        for error in exc.messages:
+            messages.error(request, error)
+        return redirect(redirect_url)
+
+    comment.save()
+    CommentNotification.enqueue_new_comment(comment)
+    messages.success(request, '评论提交成功，审核通过后将显示在页面中。')
+    return redirect(redirect_url)
 
 
 def tag_cloud_json(request):
@@ -116,15 +247,29 @@ def detail(request, id):
         prev_post = post.prev_article()  # 下一篇文章对象
     except Article.DoesNotExist:
         raise Http404
-    
+
+    approved_replies_queryset = Comment.objects.filter(
+        status=Comment.STATUS_APPROVED
+    ).order_by('created_time')
+    approved_comments = post.comments.filter(
+        status=Comment.STATUS_APPROVED,
+        parent__isnull=True,
+    ).order_by('created_time').prefetch_related(
+        Prefetch('replies', queryset=approved_replies_queryset, to_attr='approved_replies')
+    )
+    captcha_data = _ensure_comment_captcha(request)
+
     context = _get_common_context()
     context.update({
         'post': post,
         'tags': tags,
         'next_post': next_post,
         'prev_post': prev_post,
+        'approved_comments': approved_comments,
+        'comment_form': CommentForm(),
+        'captcha_question': captcha_data['question'],
     })
-    
+
     return render(request, 'post.html', context)
 
 
@@ -202,3 +347,21 @@ def sidebar_preview(request):
     # 可以在这里添加任何特定于预览页面的额外上下文
     return render(request, 'sidebar_modern_preview.html', context)
 
+
+@require_POST
+def comment_create(request, id):
+    article = get_object_or_404(Article, id=id, status='p')
+    return _submit_comment(request, article)
+
+
+@require_POST
+def comment_reply(request, id, comment_id):
+    article = get_object_or_404(Article, id=id, status='p')
+    parent_comment = get_object_or_404(
+        Comment,
+        id=comment_id,
+        article=article,
+        parent__isnull=True,
+        status=Comment.STATUS_APPROVED,
+    )
+    return _submit_comment(request, article, parent_comment=parent_comment)

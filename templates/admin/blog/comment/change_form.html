@@ -1,0 +1,29 @@
+{% extends "admin/change_form.html" %}
+{% load i18n %}
+
+{% block after_field_sets %}
+    {{ block.super }}
+    {% if original %}
+        <div class="module aligned">
+            <h2>管理员快捷回复</h2>
+            <div class="form-row">
+                <div>
+                    <label for="id_admin_reply_content">回复内容：</label>
+                    <textarea
+                        id="id_admin_reply_content"
+                        name="admin_reply_content"
+                        rows="5"
+                        style="width: min(900px, 100%);"
+                        placeholder="输入回复内容后点击“审核并回复”。该操作会自动通过当前评论并发布管理员回复。"
+                    ></textarea>
+                    <p class="help">
+                        说明：为了保持前台一级回复结构，若当前评论本身是回复，管理员内容会挂在对应根评论下，并自动添加 @用户名 前缀。
+                    </p>
+                </div>
+            </div>
+            <div class="submit-row">
+                <input type="submit" name="_reply_and_approve" value="审核并回复" class="default">
+            </div>
+        </div>
+    {% endif %}
+{% endblock %}
