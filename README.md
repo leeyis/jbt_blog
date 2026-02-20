@@ -267,6 +267,13 @@ python manage.py runserver
   - 首页交互式标签云展示，根据标签热度动态生成
   - 鼠标悬停高亮，点击可直接跳转到标签文章列表
 
+#### 社交功能 Social Features
+- [x] **评论系统** Comment System
+  - 文章评论功能 Article comments
+  - 评论审核机制 Comment moderation
+  - 评论回复功能 Comment replies
+  - 评论邮件通知 Email notifications
+
 #### 后台管理 Admin Management
 - [x] **美化界面** Enhanced Interface
   - 现代化管理界面 Modern admin interface
@@ -287,18 +294,19 @@ python manage.py runserver
   - 搜索结果高亮 Search result highlighting
   - 搜索历史记录 Search history
 
-#### 社交功能 Social Features  
-- [ ] **评论系统** Comment System
-  - 文章评论功能 Article comments
-  - 评论审核机制 Comment moderation
-  - 评论回复功能 Comment replies
-  - [ ] 评论邮件通知 Email notifications
+#### GEO 功能 GEO Features (Generative Engine Optimization)
+- [ ] **LLM 友好搜索接口优化** LLM-friendly Search Interface
+  - 面向 AI/LLM 的结构化内容索引输出 Structured content indexing for AI/LLMs
+  - 提供可机器读取的文章摘要与关键信息接口 Machine-readable summary and key-info APIs
+  - 增加站点级 AI 发现入口（如 llms.txt / 扩展 sitemap）AI discovery entrypoints (llms.txt / extended sitemap)
+  - 针对语义检索场景优化查询与返回格式 Query/response optimization for semantic retrieval
 
-#### 内容增强 Content Enhancement
-- [ ] **文章推荐** Article Recommendation
-  - 相关文章推荐 Related article suggestions
-  - 热门文章排行 Popular articles ranking
-  - 最新文章展示 Latest articles display
+#### 数据统计功能 Analytics Features
+- [ ] **站点与内容数据统计** Site and Content Analytics
+  - 文章维度访问统计（PV/UV/趋势） Article-level traffic analytics (PV/UV/trends)
+  - 搜索与导航行为统计 Search and navigation behavior analytics
+  - 评论转化与互动统计 Comment conversion and engagement metrics
+  - 后台可视化统计看板 Admin-side analytics dashboard
 
 ## 项目结构 Project Structure
 ```
