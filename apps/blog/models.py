@@ -99,6 +99,112 @@ class Article(models.Model):
         get_latest_by = 'created_time'
 
 
+class OpenSourceProject(models.Model):
+    name = models.CharField(max_length=128, verbose_name='项目名称')
+    slug = models.SlugField(max_length=140, unique=True, verbose_name='项目标识')
+    github_url = models.URLField(max_length=500, unique=True, verbose_name='Github仓库地址')
+    short_description = models.CharField(max_length=255, verbose_name='一句话描述')
+    tech_stack = models.CharField(max_length=255, blank=True, verbose_name='技术栈')
+    highlights = models.TextField(verbose_name='项目亮点')
+    use_cases = models.TextField(verbose_name='使用场景')
+    sort_order = models.PositiveIntegerField(default=100, db_index=True, verbose_name='排序值')
+    is_active = models.BooleanField(default=True, db_index=True, verbose_name='是否启用')
+    is_featured = models.BooleanField(default=False, verbose_name='是否主推')
+    cover_image = models.ImageField(upload_to='opensource_cover/', blank=True, verbose_name='封面图')
+    created_time = models.DateTimeField(default=now, verbose_name='创建时间')
+    last_mod_time = models.DateTimeField(default=now, verbose_name='修改时间')
+
+    class Meta:
+        ordering = ['sort_order', '-id']
+        verbose_name = '开源项目'
+        verbose_name_plural = '开源项目'
+        db_table = 'open_source_project'
+
+    def __str__(self):
+        return self.name
+
+    def save(self, *args, **kwargs):
+        self.last_mod_time = now()
+        super().save(*args, **kwargs)
+
+    def _split_multiline_field(self, content):
+        if not content:
+            return []
+        lines = []
+        for item in content.splitlines():
+            cleaned = item.strip()
+            if cleaned:
+                lines.append(cleaned)
+        return lines
+
+    @property
+    def highlight_items(self):
+        return self._split_multiline_field(self.highlights)
+
+    @property
+    def use_case_items(self):
+        return self._split_multiline_field(self.use_cases)
+
+    @property
+    def tech_stack_items(self):
+        if not self.tech_stack:
+            return []
+        normalized = self.tech_stack.replace('，', ',')
+        return [item.strip() for item in normalized.split(',') if item.strip()]
+
+    @property
+    def latest_snapshot(self):
+        return self.metric_snapshots.order_by('-metric_date').first()
+
+
+class ProjectMetricSnapshot(models.Model):
+    SYNC_SUCCESS = 'success'
+    SYNC_FAILED = 'failed'
+    SYNC_SKIPPED = 'skipped'
+    SYNC_CHOICES = (
+        (SYNC_SUCCESS, '同步成功'),
+        (SYNC_FAILED, '同步失败'),
+        (SYNC_SKIPPED, '已跳过'),
+    )
+
+    project = models.ForeignKey(
+        OpenSourceProject,
+        related_name='metric_snapshots',
+        on_delete=models.CASCADE,
+        verbose_name='开源项目',
+    )
+    metric_date = models.DateField(db_index=True, verbose_name='快照日期')
+    stars = models.PositiveIntegerField(default=0, verbose_name='Star数')
+    forks = models.PositiveIntegerField(default=0, verbose_name='Fork数')
+    last_commit_at = models.DateTimeField(blank=True, null=True, verbose_name='最近提交时间')
+    sync_status = models.CharField(
+        max_length=16,
+        choices=SYNC_CHOICES,
+        default=SYNC_SKIPPED,
+        db_index=True,
+        verbose_name='同步状态',
+    )
+    sync_error = models.TextField(blank=True, verbose_name='同步错误')
+    created_time = models.DateTimeField(default=now, verbose_name='创建时间')
+    last_mod_time = models.DateTimeField(default=now, verbose_name='修改时间')
+
+    class Meta:
+        ordering = ['-metric_date', '-id']
+        verbose_name = '项目指标快照'
+        verbose_name_plural = '项目指标快照'
+        db_table = 'project_metric_snapshot'
+        constraints = [
+            models.UniqueConstraint(fields=['project', 'metric_date'], name='uniq_project_metric_snapshot'),
+        ]
+
+    def __str__(self):
+        return f'{self.project.name} @ {self.metric_date}'
+
+    def save(self, *args, **kwargs):
+        self.last_mod_time = now()
+        super().save(*args, **kwargs)
+
+
 class Comment(models.Model):
     STATUS_PENDING = 'pending'
     STATUS_APPROVED = 'approved'

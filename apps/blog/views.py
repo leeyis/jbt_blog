@@ -16,7 +16,15 @@ from django.utils.timezone import now
 from django.views.decorators.http import require_POST
 
 from apps.blog.forms import CommentForm
-from apps.blog.models import Article, Category, Comment, CommentNotification, Tag
+from apps.blog.models import (
+    Article,
+    Category,
+    Comment,
+    CommentNotification,
+    OpenSourceProject,
+    ProjectMetricSnapshot,
+    Tag,
+)
 
 
 CAPTCHA_SESSION_KEY = 'comment_captcha'
@@ -271,6 +279,57 @@ def detail(request, id):
     })
 
     return render(request, 'post.html', context)
+
+
+def opensource(request):
+    projects = list(
+        OpenSourceProject.objects.filter(is_active=True).prefetch_related(
+            Prefetch(
+                'metric_snapshots',
+                queryset=ProjectMetricSnapshot.objects.order_by('-metric_date'),
+            )
+        )
+    )
+
+    featured_medals = {
+        1: '🥇',
+        2: '🥈',
+        3: '🥉',
+    }
+    featured_rank = 0
+
+    for project in projects:
+        snapshots = list(project.metric_snapshots.all())
+        project.latest_snapshot_cache = snapshots[0] if snapshots else None
+        project.featured_rank = None
+        project.featured_medal = ''
+        if project.is_featured:
+            featured_rank += 1
+            project.featured_rank = featured_rank
+            project.featured_medal = featured_medals.get(featured_rank, '')
+
+    context = _get_common_context()
+    context['project_list'] = projects
+    return render(request, 'opensource.html', context)
+
+
+def opensource_detail(request, slug):
+    project = get_object_or_404(
+        OpenSourceProject.objects.filter(is_active=True).prefetch_related(
+            Prefetch(
+                'metric_snapshots',
+                queryset=ProjectMetricSnapshot.objects.order_by('-metric_date'),
+            )
+        ),
+        slug=slug,
+    )
+    snapshots = list(project.metric_snapshots.all())
+    latest_snapshot = snapshots[0] if snapshots else None
+
+    context = _get_common_context()
+    context['project'] = project
+    context['latest_snapshot'] = latest_snapshot
+    return render(request, 'opensource_detail.html', context)
 
 
 def search_category(request, id):

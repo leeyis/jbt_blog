@@ -218,3 +218,6 @@ DEFAULT_FROM_EMAIL = os.environ.get('DEFAULT_FROM_EMAIL', 'noreply@jbtblog.local
 
 # 站点地址（用于邮件中的详情链接）
 SITE_BASE_URL = os.environ.get('SITE_BASE_URL', '')
+
+# Github开源项目同步配置
+GITHUB_TOKEN = os.environ.get('GITHUB_TOKEN', '').strip()

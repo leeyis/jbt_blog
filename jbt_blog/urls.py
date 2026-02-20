@@ -24,6 +24,8 @@ urlpatterns = [
     path('manage/', admin.site.urls),
     path('', views.home, name='home'),
     path('home/', views.home, name='home'),
+    path('opensource/', views.opensource, name='opensource'),
+    path('opensource/<slug:slug>/', views.opensource_detail, name='opensource_detail'),
     path('sidebar_preview/', views.sidebar_preview, name='sidebar_preview'),
     path('articles/<int:id>/', views.detail, name='detail'),
     path('articles/<int:id>/comments/', views.comment_create, name='comment_create'),

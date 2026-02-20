@@ -1,0 +1,83 @@
+{% extends "base.html" %}
+{% load static %}
+{% block title %} 开源项目墙 {% endblock %}
+
+{% block content %}
+    <div class="blog-post">
+        <div class="page-header open-source-header">
+            <h1 class="page-header-title">
+                <i class="fa fa-github"></i> 开源项目墙
+            </h1>
+            <p class="page-header-meta">个人开源项目一览，欢迎提 Issue、提 PR，一起共创。</p>
+        </div>
+
+        <div class="opensource-grid">
+            {% for project in project_list %}
+                <article class="post-container opensource-card">
+                    <header class="opensource-card-header">
+                        <h2 class="opensource-title">
+                            <a href="{% url 'opensource_detail' slug=project.slug %}">{{ project.name }}</a>
+                        </h2>
+                        {% if project.featured_medal %}
+                            <span
+                                class="opensource-featured"
+                                title="主推项目第{{ project.featured_rank }}名"
+                                aria-label="主推项目第{{ project.featured_rank }}名"
+                            >
+                                {{ project.featured_medal }}
+                            </span>
+                        {% endif %}
+                    </header>
+
+                    <p class="opensource-description">{{ project.short_description }}</p>
+
+                    <div class="opensource-metrics">
+                        <span>
+                            <i class="fa fa-star" title="Star 数" aria-label="Star 数"></i>
+                            {% if project.latest_snapshot_cache %}
+                                {{ project.latest_snapshot_cache.stars }}
+                            {% else %}
+                                N/A
+                            {% endif %}
+                        </span>
+                        <span>
+                            <i class="fa fa-code-fork" title="Fork 数" aria-label="Fork 数"></i>
+                            {% if project.latest_snapshot_cache %}
+                                {{ project.latest_snapshot_cache.forks }}
+                            {% else %}
+                                N/A
+                            {% endif %}
+                        </span>
+                        <span>
+                            <i class="fa fa-clock-o" title="最近提交时间" aria-label="最近提交时间"></i>
+                            {% if project.latest_snapshot_cache and project.latest_snapshot_cache.last_commit_at %}
+                                {{ project.latest_snapshot_cache.last_commit_at|date:'Y-m-d H:i' }}
+                            {% else %}
+                                N/A
+                            {% endif %}
+                        </span>
+                    </div>
+
+                    <div class="opensource-actions">
+                        <a class="opensource-button" href="{% url 'opensource_detail' slug=project.slug %}">查看详情</a>
+                        <a class="opensource-button is-ghost" href="{{ project.github_url }}" target="_blank" rel="noopener noreferrer">Github</a>
+                    </div>
+
+                    {% if project.latest_snapshot_cache and project.latest_snapshot_cache.sync_status == 'failed' %}
+                        <p class="opensource-sync-hint">数据稍后更新</p>
+                    {% endif %}
+                </article>
+            {% empty %}
+                <div class="post-container">
+                    <div class="empty-posts-state">
+                        <div class="empty-posts-content">
+                            <i class="fa fa-folder-open-o"></i>
+                            <h3>项目正在整理中，敬请期待。</h3>
+                            <p>后续将持续发布主推开源项目与更新动态。</p>
+                        </div>
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+    </div>
+{% endblock %}

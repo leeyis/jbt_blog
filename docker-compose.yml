@@ -37,6 +37,21 @@ services:
       POSTGRES_PORT: 5432
       # Django配置
       DJANGO_SETTINGS_MODULE: jbt_blog.settings
+      # 评论通知配置
+      COMMENT_ADMIN_EMAIL: ${COMMENT_ADMIN_EMAIL:-}
+      COMMENT_NOTIFICATION_MAX_RETRIES: ${COMMENT_NOTIFICATION_MAX_RETRIES:-3}
+      SITE_BASE_URL: ${SITE_BASE_URL:-}
+      # 邮件服务配置
+      EMAIL_BACKEND: ${EMAIL_BACKEND:-django.core.mail.backends.smtp.EmailBackend}
+      EMAIL_HOST: ${EMAIL_HOST:-}
+      EMAIL_PORT: ${EMAIL_PORT:-25}
+      EMAIL_HOST_USER: ${EMAIL_HOST_USER:-}
+      EMAIL_HOST_PASSWORD: ${EMAIL_HOST_PASSWORD:-}
+      EMAIL_USE_TLS: ${EMAIL_USE_TLS:-false}
+      EMAIL_USE_SSL: ${EMAIL_USE_SSL:-false}
+      DEFAULT_FROM_EMAIL: ${DEFAULT_FROM_EMAIL:-noreply@jbtblog.local}
+      # Github 开源项目同步配置（建议在 .env 中设置）
+      GITHUB_TOKEN: ${GITHUB_TOKEN:-}
     volumes:
       - /home/eason/docker-compose-ymls/blogmedia:/app/media
     networks:
@@ -45,6 +60,48 @@ services:
       db:
         condition: service_healthy
     command: sh -c "python manage.py migrate --noinput && gunicorn jbt_blog.wsgi --bind 0.0.0.0:8000"
+
+  # 评论通知异步发送服务（轮询任务队列）
+  comment_notifier:
+    image: blog:v1.0
+    container_name: comment_notifier
+    restart: unless-stopped
+    healthcheck:
+      disable: true
+    environment:
+      # 数据库配置
+      POSTGRES_DB: blog
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: eason2025
+      POSTGRES_HOST: db
+      POSTGRES_PORT: 5432
+      # Django配置
+      DJANGO_SETTINGS_MODULE: jbt_blog.settings
+      # 评论通知配置
+      COMMENT_ADMIN_EMAIL: ${COMMENT_ADMIN_EMAIL:-}
+      COMMENT_NOTIFICATION_MAX_RETRIES: ${COMMENT_NOTIFICATION_MAX_RETRIES:-3}
+      SITE_BASE_URL: ${SITE_BASE_URL:-}
+      # 邮件服务配置
+      EMAIL_BACKEND: ${EMAIL_BACKEND:-django.core.mail.backends.smtp.EmailBackend}
+      EMAIL_HOST: ${EMAIL_HOST:-}
+      EMAIL_PORT: ${EMAIL_PORT:-25}
+      EMAIL_HOST_USER: ${EMAIL_HOST_USER:-}
+      EMAIL_HOST_PASSWORD: ${EMAIL_HOST_PASSWORD:-}
+      EMAIL_USE_TLS: ${EMAIL_USE_TLS:-false}
+      EMAIL_USE_SSL: ${EMAIL_USE_SSL:-false}
+      DEFAULT_FROM_EMAIL: ${DEFAULT_FROM_EMAIL:-noreply@jbtblog.local}
+    networks:
+      - blog_network
+    depends_on:
+      db:
+        condition: service_healthy
+      web:
+        condition: service_started
+    command: >
+      sh -c "while true; do
+      python manage.py send_comment_notifications --limit ${COMMENT_NOTIFICATION_BATCH_LIMIT:-50} || true;
+      sleep ${COMMENT_NOTIFICATION_POLL_SECONDS:-60};
+      done"
 
 # 网络定义
 networks:

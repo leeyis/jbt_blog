@@ -1,0 +1,76 @@
+{% extends "base.html" %}
+{% load static %}
+{% block title %} {{ project.name }} - 开源项目详情 {% endblock %}
+
+{% block content %}
+    <div class="blog-post">
+        <article class="post-container opensource-detail-card">
+            <header class="opensource-detail-header">
+                <h1 class="opensource-detail-title">{{ project.name }}</h1>
+                <div class="opensource-actions">
+                    <a class="opensource-button is-ghost" href="{{ project.github_url }}" target="_blank" rel="noopener noreferrer">
+                        前往 Github
+                    </a>
+                </div>
+            </header>
+
+            <p class="opensource-detail-description">{{ project.short_description }}</p>
+
+            <div class="opensource-metrics detail-metrics">
+                <span>
+                    <i class="fa fa-star" title="Star 数" aria-label="Star 数"></i>
+                    {% if latest_snapshot %}
+                        {{ latest_snapshot.stars }}
+                    {% else %}
+                        N/A
+                    {% endif %}
+                </span>
+                <span>
+                    <i class="fa fa-code-fork" title="Fork 数" aria-label="Fork 数"></i>
+                    {% if latest_snapshot %}
+                        {{ latest_snapshot.forks }}
+                    {% else %}
+                        N/A
+                    {% endif %}
+                </span>
+                <span>
+                    <i class="fa fa-clock-o" title="最近提交时间" aria-label="最近提交时间"></i>
+                    {% if latest_snapshot and latest_snapshot.last_commit_at %}
+                        {{ latest_snapshot.last_commit_at|date:'Y-m-d H:i' }}
+                    {% else %}
+                        N/A
+                    {% endif %}
+                </span>
+            </div>
+
+            {% if project.tech_stack_items %}
+                <section class="opensource-section">
+                    <h2><i class="fa fa-code"></i> 技术栈</h2>
+                    <div class="opensource-tech-stack">
+                        {% for stack in project.tech_stack_items %}
+                            <span class="opensource-tech-tag">{{ stack }}</span>
+                        {% endfor %}
+                    </div>
+                </section>
+            {% endif %}
+
+            <section class="opensource-section">
+                <h2><i class="fa fa-lightbulb-o"></i> 项目亮点</h2>
+                <ul class="opensource-list">
+                    {% for item in project.highlight_items %}
+                        <li>{{ item }}</li>
+                    {% endfor %}
+                </ul>
+            </section>
+
+            <section class="opensource-section">
+                <h2><i class="fa fa-compass"></i> 使用场景</h2>
+                <ul class="opensource-list">
+                    {% for item in project.use_case_items %}
+                        <li>{{ item }}</li>
+                    {% endfor %}
+                </ul>
+            </section>
+        </article>
+    </div>
+{% endblock %}
